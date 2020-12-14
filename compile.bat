@@ -1,0 +1,1 @@
+em++ src/main.cpp src/game.cpp src/actor.cpp src/component.cpp src/math.cpp -o game.html -std=c++17 -DDEBUG -lwebsocket.js -s --shell-file shell.html -s EXPORTED_FUNCTIONS=['_main'] -s NO_EXIT_RUNTIME=1 -s USE_SDL=2 -s EXTRA_EXPORTED_RUNTIME_METHODS="['cwrap', 'ccall']"
