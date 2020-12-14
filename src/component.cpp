@@ -15,7 +15,7 @@ void Component::update(float delta){
 }
 
 void Component::processInput(SDL_Event& event){
-
+    
 }
 
 void Component::onUpdateWorldTransform(){

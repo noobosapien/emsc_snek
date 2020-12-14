@@ -82,10 +82,62 @@ public:
         return reinterpret_cast<const float*>(&mat[0][0]);
     }
 
-    friend Matrix4 operator*(Matrix4& matA, Matrix4& matB){
+    friend Matrix4 operator*(const Matrix4& matA, const Matrix4& matB){
         Matrix4 retVal;
 
+        for(int i = 0; i < 4; i++){
+            for(int j = 0; j < 4; j++){
+                retVal.mat[i][j] = 
+                matA.mat[i][0] * matB.mat[0][j] +
+                matA.mat[i][1] * matB.mat[1][j] +
+                matA.mat[i][2] * matB.mat[2][j] +
+                matA.mat[i][3] * matB.mat[3][j];
+            }
+        }
+
         return retVal;
+    }
+
+    Matrix4& operator*=(const Matrix4& mat){
+        *this = *this * mat;
+        return *this;
+    }
+
+    static Matrix4 createScale(float x, float y, float z){
+        float temp[4][4] = {
+            {x, 0.0f, 0.0f, 0.0f},
+            {0.0f, y, 0.0f, 0.0f},
+            {0.0f, 0.0f, z, 0.0f},
+            {0.0f, 0.0f, 0.0f, 1.0f}
+        };
+
+        return Matrix4(temp);
+    }
+
+    static Matrix4 createScale(float scale){
+        return createScale(scale, scale, scale);
+    }
+
+    static Matrix4 createRotationZ(float theta){
+        float temp[4][4] = {
+            {cos(theta), sin(theta), 0.0f, 0.0f},
+            {-sin(theta), cos(theta), 0.0f, 0.0f},
+            {0.0f, 0.0f, 1.0f, 0.0f},
+            {0.0f, 0.0f, 0.0f, 1.0f}
+        };
+
+        return Matrix4(temp);
+    }
+
+    static Matrix4 createTranslation(float x, float y, float z){
+        float temp[4][4] = {
+            {1.0f, 0.0f, 0.0f, 0.0f},
+            {0.0f, 1.0f, 0.0f, 0.0f},
+            {0.0f, 0.0f, 1.0f, 0.0f},
+            {x, y, z, 1.0f}
+        };
+
+        return Matrix4(temp);
     }
 
     static const Matrix4 Identity;

@@ -118,7 +118,7 @@ void Game::removeActor(Actor* actor){
 }
 
 void Game::loadData(){
-    
+    new Actor(this);
 }
 
 void Game::unloadData(){

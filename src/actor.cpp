@@ -9,7 +9,7 @@ mRotation(0.0f),
 mGame(game),
 mRecomputeWorldTransform(true)
 {
-    mGame->addActor(this);
+    mGame->addActor(this); new Component(this);
 }
 
 Actor::~Actor(){
@@ -54,7 +54,9 @@ void Actor::computeWorldTransform(){
     if(mRecomputeWorldTransform){
         mRecomputeWorldTransform = false;
 
-        //todo scale a matrix4 then rotate then translate
+        mWorldTransform = Matrix4::createScale(mScale);
+        mWorldTransform *= Matrix4::createRotationZ(mRotation);
+        mWorldTransform *= Matrix4::createTranslation(mPosition.x, mPosition.y, 0.0f);
 
         for(auto component: mComponents){
             component->onUpdateWorldTransform();
