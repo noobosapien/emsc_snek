@@ -11,6 +11,7 @@
 #include <GL/glfw.h>
 
 #include "actor.h"
+#include "shader.h"
 
 class Game
 {
@@ -34,6 +35,8 @@ private:
     void loadData();
     void unloadData();
 
+    bool loadShaders();
+
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_GLContext gl_context;
@@ -44,6 +47,9 @@ private:
     std::vector<Actor*> mActors;
     std::vector<Actor*> mPendingActors;
     bool mUpdatingActors;
+
+    Shader* mSpriteShader;
+
 };
 
 #endif

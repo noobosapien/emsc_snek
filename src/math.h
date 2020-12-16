@@ -140,6 +140,17 @@ public:
         return Matrix4(temp);
     }
 
+    static Matrix4 createSimpleViewProj(float width, float height){
+        float temp[4][4] = {
+            {2/width, 0.f, 0.f, 0.f},
+            {0.f, 2/height, 0.f, 0.f},
+            {0.f, 0.f, 1.f, 0.f},
+            {0.f, 0.f, 1.f, 1.f}
+        };
+
+        return Matrix4(temp);
+    }
+
     static const Matrix4 Identity;
 };
 

@@ -18,6 +18,10 @@ bool Game::initialize(){
     gl_context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, gl_context);
 
+    if(!loadShaders()){
+        printf("Failed to load shaders\n");
+    }
+    
     loadData();
 
     return true;
@@ -30,6 +34,8 @@ void Game::runLoop(){
 }
 
 bool Game::shutDown(){
+    mSpriteShader->unLoad();
+    delete mSpriteShader;
     return true;
 }
 
@@ -91,9 +97,17 @@ void Game::generateOutput(){
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //set shaders, vertex arrays and draw the sprites
+    
+    mSpriteShader->setActive();
+    mSpriteShader->setAttrib("a_position", 2, 8, 0);
+    mSpriteShader->setAttrib("a_color",3, 8, 3);
 
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+    
     SDL_GL_SwapWindow(window);
 }
+
+
 
 void Game::addActor(Actor* actor){
     if(mUpdatingActors){
@@ -118,9 +132,39 @@ void Game::removeActor(Actor* actor){
 }
 
 void Game::loadData(){
-    new Actor(this);
+    
 }
 
 void Game::unloadData(){
 
+}
+
+bool Game::loadShaders(){
+    mSpriteShader = new Shader();
+
+    if(!mSpriteShader->load("src/shaders/sprite.vert", "src/shaders/sprite.frag")){
+        return false;
+    }
+
+    mSpriteShader->setActive();
+
+    float vertices[] = {
+        -0.5f,  0.5f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f,
+		 0.5f,  0.5f, 0.f, 1.f, 0.f, 1.f, 0.f, 0.f,
+		 0.5f, -0.5f, 0.f, 1.f, 1.f, 1.f, 1.f, 0.f,
+		-0.5f, -0.5f, 0.f, 0.f, 0.f, 1.f, 0.f, 1.f,
+    };
+
+	unsigned int indices[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+    
+
+    mSpriteShader->setVertexData(vertices, 4, indices, 6);
+
+    Matrix4 viewProj = Matrix4::createSimpleViewProj((float)Game::WIN_WIDTH, (float)Game::WIN_HEIGHT);
+
+    //mSpriteShader->setMatrixUniform("uViewProj", viewProj);
+    return true;
 }
