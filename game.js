@@ -190,7 +190,7 @@ Module['FS_createPath']('/src', 'shaders', true, true);
     }
   
    }
-   loadPackage({"files": [{"filename": "/src/shaders/sprite.frag", "start": 0, "end": 92, "audio": 0}, {"filename": "/src/shaders/sprite.vert", "start": 92, "end": 237, "audio": 0}], "remote_package_size": 237, "package_uuid": "e8d60b72-6504-4c84-88a3-6fe56ef6a634"});
+   loadPackage({"files": [{"filename": "/src/shaders/sprite.frag", "start": 0, "end": 92, "audio": 0}, {"filename": "/src/shaders/sprite.vert", "start": 92, "end": 237, "audio": 0}], "remote_package_size": 237, "package_uuid": "1b18764c-41cd-4a18-a497-e13bba5e7d97"});
   
   })();
   

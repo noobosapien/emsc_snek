@@ -12,6 +12,8 @@
 
 #include "actor.h"
 #include "shader.h"
+#include "spritecomponent.h"
+#include "texture.h"
 
 class Game
 {
@@ -23,6 +25,11 @@ public:
 
     void addActor(Actor* actor);
     void removeActor(Actor* actor);
+
+    void addSprite(SpriteComponent* sprite);
+    void removeSprite(SpriteComponent* sprite);
+
+    SDL_Renderer* getRenderer(){return renderer;}
 
 private:
     static const int WIN_WIDTH = 1024;
@@ -49,6 +56,8 @@ private:
     bool mUpdatingActors;
 
     Shader* mSpriteShader;
+
+    std::vector<SpriteComponent*> mSprites;
 
 };
 

@@ -168,3 +168,21 @@ bool Game::loadShaders(){
     //mSpriteShader->setMatrixUniform("uViewProj", viewProj);
     return true;
 }
+
+void Game::addSprite(SpriteComponent* sprite){
+    int drawOrder = sprite->getDrawOrder();
+
+    auto iter = mSprites.begin();
+
+    for(; iter != mSprites.end(); ++iter){
+        if(drawOrder < (*iter)->getDrawOrder())
+            break;
+    }
+    mSprites.insert(iter, sprite);
+}
+
+void Game::removeSprite(SpriteComponent* sprite){
+    auto iter = std::find(mSprites.begin(), mSprites.end(), sprite);
+
+    mSprites.erase(iter);
+}
