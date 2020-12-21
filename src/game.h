@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <unordered_map>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL_opengl.h>
@@ -31,6 +32,8 @@ public:
 
     SDL_Renderer* getRenderer(){return renderer;}
 
+    Texture* getTexture(const std::string& filename);
+
 private:
     static const int WIN_WIDTH = 1024;
     static const int WIN_HEIGHT = 720;
@@ -58,6 +61,8 @@ private:
     Shader* mSpriteShader;
 
     std::vector<SpriteComponent*> mSprites;
+
+    std::unordered_map<std::string, Texture*> mTextures;
 
 };
 

@@ -33,6 +33,7 @@ void Shader::unLoad(){
 
 void Shader::setActive(){
     glUseProgram(mShaderProgram);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
 }
 
 void Shader::setAttrib(const char* name, unsigned int size, unsigned int stride,
@@ -51,7 +52,7 @@ void Shader::setAttrib(const char* name, unsigned int size, unsigned int stride,
 
 void Shader::setMatrixUniform(const char* name, const Matrix4& matrix){
     GLuint loc = glGetUniformLocation(mShaderProgram, name);
-    glUniformMatrix4fv(loc, 1, GL_TRUE, matrix.getAsFloatPtr());
+    glUniformMatrix4fv(loc, 1, GL_FALSE, matrix.getAsFloatPtr());
 }
 
 
@@ -124,10 +125,10 @@ void Shader::setVertexData(float* verts, unsigned int numVerts,
     const unsigned int* indices, unsigned int numIndices){
 
     setActive();
-
+    
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numVerts * 8, verts, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numVerts * 5, verts, GL_STATIC_DRAW);
     
     
     glGenBuffers(1, &IBO);

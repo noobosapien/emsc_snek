@@ -3,6 +3,7 @@
 #include <GLES2/gl2.h>
 #include <GL/glfw.h>
 
+#include "game.h"
 #include "spritecomponent.h"
 #include "actor.h"
 #include "shader.h"
@@ -28,10 +29,10 @@ void SpriteComponent::draw(Shader* shader){
 
         Matrix4 world = scaleMat * mOwner->getWorldTransform();
 
-        shader->setMatrixUniform("uWorldTransform", world);
+        shader->setMatrixUniform("u_worldTransform", world);
 
         mTexture->setActive();
-
+        
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     }
 }

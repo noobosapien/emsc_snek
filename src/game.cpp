@@ -23,6 +23,9 @@ bool Game::initialize(){
     }
     
     loadData();
+    
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     return true;
 }
@@ -89,20 +92,20 @@ void Game::updateGame(){
     }
 }
 
+/*
+    IMPORTANT FOR SPRITES
+*/
 void Game::generateOutput(){
     glClearColor(1, 0.3, 0.3, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    //set shaders, vertex arrays and draw the sprites
     
-    mSpriteShader->setActive();
-    mSpriteShader->setAttrib("a_position", 2, 8, 0);
-    mSpriteShader->setAttrib("a_color",3, 8, 3);
+    //set shaders, vertex arrays and draw the sprites
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+    for(auto sprite: mSprites){
+        sprite->draw(mSpriteShader);
+    }
+
+    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     
     SDL_GL_SwapWindow(window);
 }
@@ -132,13 +135,31 @@ void Game::removeActor(Actor* actor){
 }
 
 void Game::loadData(){
-    
+    Actor* a = new Actor(this);
+    SpriteComponent* sc = new SpriteComponent(a);
+    sc->setTexture(getTexture("src/textures/a.png"));
+
+    Actor* b = new Actor(this);
+    SpriteComponent* scb = new SpriteComponent(b);
+    scb->setTexture(getTexture("src/textures/b.png"));
+
 }
 
 void Game::unloadData(){
+    while(!mActors.empty()){
+        delete mActors.back();
+    }
 
+    for(auto i : mTextures){
+        i.second->unload();
+        delete i.second;
+    }
+    mTextures.clear();
 }
 
+/*
+    IMPORTANT FOR SPRITES
+*/
 bool Game::loadShaders(){
     mSpriteShader = new Shader();
 
@@ -149,10 +170,10 @@ bool Game::loadShaders(){
     mSpriteShader->setActive();
 
     float vertices[] = {
-        -0.5f,  0.5f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f,
-		 0.5f,  0.5f, 0.f, 1.f, 0.f, 1.f, 0.f, 0.f,
-		 0.5f, -0.5f, 0.f, 1.f, 1.f, 1.f, 1.f, 0.f,
-		-0.5f, -0.5f, 0.f, 0.f, 0.f, 1.f, 0.f, 1.f,
+        -0.5f,  0.5f, 0.f, 0.f, 0.f,
+		 0.5f,  0.5f, 0.f, 1.f, 0.f,
+		 0.5f, -0.5f, 0.f, 1.f, 1.f,
+		-0.5f, -0.5f, 0.f, 0.f, 1.f
     };
 
 	unsigned int indices[] = {
@@ -163,9 +184,14 @@ bool Game::loadShaders(){
 
     mSpriteShader->setVertexData(vertices, 4, indices, 6);
 
+    mSpriteShader->setAttrib("a_position", 3, 5, 0);
+    //mSpriteShader->setAttrib("a_color",3, 8, 3);
+    mSpriteShader->setAttrib("a_texCoord", 2, 5, 3);
+
     Matrix4 viewProj = Matrix4::createSimpleViewProj((float)Game::WIN_WIDTH, (float)Game::WIN_HEIGHT);
 
-    //mSpriteShader->setMatrixUniform("uViewProj", viewProj);
+    mSpriteShader->setMatrixUniform("u_viewProj", viewProj);
+    
     return true;
 }
 
@@ -185,4 +211,25 @@ void Game::removeSprite(SpriteComponent* sprite){
     auto iter = std::find(mSprites.begin(), mSprites.end(), sprite);
 
     mSprites.erase(iter);
+}
+
+Texture* Game::getTexture(const std::string& filename){
+    Texture* tex = nullptr;
+
+    auto iter = mTextures.find(filename);
+
+    if(iter != mTextures.end())
+        tex = iter->second;
+    else{
+        tex = new Texture();
+
+        if(tex->load(filename, renderer))
+            mTextures.emplace(filename, tex);
+        else{
+            delete tex;
+            tex = nullptr;
+        }
+    }
+
+    return tex;
 }
