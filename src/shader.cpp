@@ -50,12 +50,15 @@ void Shader::setAttrib(const char* name, unsigned int size, unsigned int stride,
 }
 
 
-void Shader::setMatrixUniform(const char* name, const Matrix4& matrix){
+void Shader::setMatrixUniform(const char* name, const glm::mat4& matrix){
     GLuint loc = glGetUniformLocation(mShaderProgram, name);
-    glUniformMatrix4fv(loc, 1, GL_FALSE, matrix.getAsFloatPtr());
+    glUniformMatrix4fv(loc, 1, GL_FALSE, &matrix[0][0]);
 }
 
-
+void Shader::setFloatUniform(const char* name, const float fl){
+    GLuint loc = glGetUniformLocation(mShaderProgram, name);
+    glUniform1f(loc, fl);
+}
 
 bool Shader::compileShader(std::string filename, GLenum shaderType, GLuint& outShader){
     std::ifstream shaderFile(filename);

@@ -22,6 +22,8 @@ bool Game::initialize(){
         printf("Failed to load shaders\n");
     }
     
+    glViewport(0, 0, Game::WIN_WIDTH, Game::WIN_HEIGHT);
+    
     loadData();
     
     glEnable(GL_BLEND);
@@ -138,11 +140,12 @@ void Game::loadData(){
     Actor* a = new Actor(this);
     SpriteComponent* sc = new SpriteComponent(a);
     sc->setTexture(getTexture("src/textures/a.png"));
+    InputComponent* in = new InputComponent(a);
 
-    Actor* b = new Actor(this);
-    SpriteComponent* scb = new SpriteComponent(b);
-    scb->setTexture(getTexture("src/textures/b.png"));
-
+    in->setUpKey(SDLK_w);
+    in->setDownKey(SDLK_s);
+    in->setLeftKey(SDLK_a);
+    in->setRightKey(SDLK_d);
 }
 
 void Game::unloadData(){
@@ -170,27 +173,22 @@ bool Game::loadShaders(){
     mSpriteShader->setActive();
 
     float vertices[] = {
-        -0.5f,  0.5f, 0.f, 0.f, 0.f,
-		 0.5f,  0.5f, 0.f, 1.f, 0.f,
-		 0.5f, -0.5f, 0.f, 1.f, 1.f,
-		-0.5f, -0.5f, 0.f, 0.f, 1.f
+        -1.f,  1.f, 0.f, 0.f, 1.f,
+		 1.f,  1.f, 0.f, 1.f, 1.f,
+		 1.f, -1.f, 0.f, 1.f, 0.f,
+		-1.f, -1.f, 0.f, 0.f, 0.f
     };
 
 	unsigned int indices[] = {
 		0, 1, 2,
-		2, 3, 0
+        2, 3, 0
 	};
     
 
     mSpriteShader->setVertexData(vertices, 4, indices, 6);
 
     mSpriteShader->setAttrib("a_position", 3, 5, 0);
-    //mSpriteShader->setAttrib("a_color",3, 8, 3);
     mSpriteShader->setAttrib("a_texCoord", 2, 5, 3);
-
-    Matrix4 viewProj = Matrix4::createSimpleViewProj((float)Game::WIN_WIDTH, (float)Game::WIN_HEIGHT);
-
-    mSpriteShader->setMatrixUniform("u_viewProj", viewProj);
     
     return true;
 }

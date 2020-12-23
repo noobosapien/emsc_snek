@@ -3,7 +3,10 @@
 
 #include <vector>
 
-#include "math.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 #include <SDL2/SDL.h>
 
 class Actor{
@@ -24,17 +27,17 @@ public:
     void processInput(SDL_Event& event);
     virtual void actorInput(const SDL_Event& event);
 
-    inline void setPosition(const Vector2& pos){mPosition = pos; mRecomputeWorldTransform = true;}
-    inline const Vector2& getPosition(){return mPosition;}
+    inline void setPosition(const glm::vec2& pos){mPosition = pos; mRecomputeWorldTransform = true;}
+    inline const glm::vec2& getPosition(){return mPosition;}
     inline void setScale(float scale){mScale = scale; mRecomputeWorldTransform = true;}
     inline const float getScale(){return mScale;}
     inline void setRotation(float rotation){mRotation = rotation; mRecomputeWorldTransform = true;}
     inline const float getRotation(){return mRotation;}
 
     void computeWorldTransform();
-    inline const Matrix4& getWorldTransform(){return mWorldTransform;}
+    inline const glm::mat4& getWorldTransform(){return mWorldTransform;}
 
-    Vector2 getForward(){return Vector2(cos(mRotation), sin(mRotation));}
+    glm::vec2 getForward(){return glm::vec2(glm::cos(mRotation), glm::sin(mRotation));}
 
     State getState(){return mState;}
     void setState(State state){mState = state;}
@@ -46,8 +49,8 @@ public:
 
 private:
     State mState;
-    Vector2 mPosition;
-    Matrix4 mWorldTransform;
+    glm::vec2 mPosition;
+    glm::mat4 mWorldTransform;
     float mScale;
     float mRotation;
     bool mRecomputeWorldTransform;

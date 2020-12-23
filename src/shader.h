@@ -8,7 +8,9 @@
 #include <fstream>
 #include <stdio.h>
 
-#include "math.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 #ifndef SHADER_H
 #define SHADER_H
@@ -23,7 +25,10 @@ public:
     void unLoad();
 
     void setActive();
-    void setMatrixUniform(const char* name, const Matrix4& matrix);
+
+    void setMatrixUniform(const char* name, const glm::mat4& matrix);
+    void setFloatUniform(const char* name, const float fl);
+    
     void setVertexData(float* verts, unsigned int numVerts, 
     const unsigned int* indices, unsigned int numIndices);
     void setAttrib(const char* name, unsigned int size, unsigned int stride,

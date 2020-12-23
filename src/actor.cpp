@@ -3,8 +3,9 @@
 #include "component.h"
 
 Actor::Actor(Game* game): mState(EActive),
-mPosition(Vector2()),
-mScale(1.0f),
+mPosition(glm::vec2(0.f, 0.f)),
+mWorldTransform(glm::mat4(1.f)),
+mScale(.06f),
 mRotation(0.0f),
 mGame(game),
 mRecomputeWorldTransform(true)
@@ -53,10 +54,14 @@ void Actor::actorInput(const SDL_Event& event){}
 void Actor::computeWorldTransform(){
     if(mRecomputeWorldTransform){
         mRecomputeWorldTransform = false;
+        
+        glm::mat4 trans = glm::mat4(1.f);
 
-        mWorldTransform = Matrix4::createScale(mScale);
-        mWorldTransform *= Matrix4::createRotationZ(mRotation);
-        mWorldTransform *= Matrix4::createTranslation(mPosition.x, mPosition.y, 0.0f);
+        trans = glm::translate(trans, glm::vec3(mPosition.x, mPosition.y, 0.f));
+        trans = glm::rotate(trans, glm::radians(mRotation), glm::vec3(0.f, 0.f, 1.f));
+        trans = glm::scale(trans, glm::vec3(mScale, mScale, mScale));
+
+        mWorldTransform = trans;
 
         for(auto component: mComponents){
             component->onUpdateWorldTransform();
