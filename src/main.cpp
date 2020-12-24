@@ -10,7 +10,9 @@ void loop(){
 int main(int argc, char* argv[]){
     game = new Game;
 
+    game->setDebug(true);
     bool success = game->initialize();
+
     if(success)
         emscripten_set_main_loop(loop, 0, 0);
 

@@ -21,6 +21,9 @@
 #include "texture.h"
 #include "movecomponent.h"
 #include "inputcomponent.h"
+#include "snake.h"
+#include "circlecomponent.h"
+
 
 class Game
 {
@@ -36,9 +39,14 @@ public:
     void addSprite(SpriteComponent* sprite);
     void removeSprite(SpriteComponent* sprite);
 
+    void addCircle(CircleComponent* circle);
+    void removeCircle(CircleComponent* circle);
+
     SDL_Renderer* getRenderer(){return renderer;}
 
     Texture* getTexture(const std::string& filename);
+
+    void setDebug(bool value) {mDebug = value;}
 
     static const int WIN_WIDTH = 1024;
     static const int WIN_HEIGHT = 720;
@@ -52,6 +60,10 @@ private:
     void unloadData();
 
     bool loadShaders();
+    bool loadSpriteShader();
+    bool loadCircleShader();
+
+    bool mDebug;
 
     SDL_Window* window;
     SDL_Renderer* renderer;
@@ -65,10 +77,13 @@ private:
     bool mUpdatingActors;
 
     Shader* mSpriteShader;
+    Shader* mCircleShader;
 
     std::vector<SpriteComponent*> mSprites;
 
     std::unordered_map<std::string, Texture*> mTextures;
+
+    std::vector<CircleComponent*> mCircles;
 
 };
 

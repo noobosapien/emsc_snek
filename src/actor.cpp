@@ -5,7 +5,7 @@
 Actor::Actor(Game* game): mState(EActive),
 mPosition(glm::vec2(0.f, 0.f)),
 mWorldTransform(glm::mat4(1.f)),
-mScale(.06f),
+mScale(1.f),
 mRotation(0.0f),
 mGame(game),
 mRecomputeWorldTransform(true)

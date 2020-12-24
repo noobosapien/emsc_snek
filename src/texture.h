@@ -1,3 +1,6 @@
+#ifndef TEXTURE_H
+#define TEXTURE_H
+
 #include <stdio.h>
 #include <math.h>
 #include <string>
@@ -7,9 +10,6 @@
 
 #include <GLES2/gl2.h>
 #include <GL/glfw.h>
-
-#ifndef TEXTURE_H
-#define TEXTURE_H
 
 class Texture{
 public:

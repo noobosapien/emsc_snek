@@ -1,7 +1,7 @@
 #include "game.h"
 
 
- Game:: Game(): mTicksCount(0), mDeltaTime(0.0f), mUpdatingActors(false)
+ Game:: Game(): mTicksCount(0), mDeltaTime(0.0f), mUpdatingActors(false), mDebug(false)
 {
 }
 
@@ -39,6 +39,9 @@ void Game::runLoop(){
 }
 
 bool Game::shutDown(){
+    mCircleShader->unLoad();
+    delete mCircleShader;
+
     mSpriteShader->unLoad();
     delete mSpriteShader;
     return true;
@@ -107,12 +110,13 @@ void Game::generateOutput(){
         sprite->draw(mSpriteShader);
     }
 
-    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+    if(mDebug)
+        for(auto circle: mCircles){
+            circle->draw(mCircleShader);
+        }
     
     SDL_GL_SwapWindow(window);
 }
-
-
 
 void Game::addActor(Actor* actor){
     if(mUpdatingActors){
@@ -137,15 +141,7 @@ void Game::removeActor(Actor* actor){
 }
 
 void Game::loadData(){
-    Actor* a = new Actor(this);
-    SpriteComponent* sc = new SpriteComponent(a);
-    sc->setTexture(getTexture("src/textures/a.png"));
-    InputComponent* in = new InputComponent(a);
-
-    in->setUpKey(SDLK_w);
-    in->setDownKey(SDLK_s);
-    in->setLeftKey(SDLK_a);
-    in->setRightKey(SDLK_d);
+    Snake* snake = new Snake(this);
 }
 
 void Game::unloadData(){
@@ -164,6 +160,45 @@ void Game::unloadData(){
     IMPORTANT FOR SPRITES
 */
 bool Game::loadShaders(){
+
+    if(!loadCircleShader())
+        return false;
+    
+    if(!loadSpriteShader())
+        return false;
+    
+    return true;
+}
+
+bool Game::loadCircleShader(){
+    mCircleShader = new Shader();
+
+    if(!mCircleShader->load("src/shaders/circle.vert", "src/shaders/circle.frag"))
+        return false;
+    
+    mCircleShader->setActive();
+
+    float vertices[] = {
+        -1.f,  1.f, 0.f, 0.f, 0.f, 0.f,
+		 1.f,  1.f, 0.f, 0.f, 0.f, 0.f,
+		 1.f, -1.f, 0.f, 0.f, 0.f, 0.f,
+		-1.f, -1.f, 0.f, 0.f, 0.f, 0.f
+    };
+
+    unsigned int indices[] = {
+		0, 1, 2,
+        2, 3, 0
+	};
+
+    mCircleShader->setVertexData(vertices, 4, indices, 6, 6);
+
+    mCircleShader->setAttrib("a_position", 3, 6, 0);
+    mCircleShader->setAttrib("a_color", 3, 6, 3);
+
+    return true;
+}
+
+bool Game::loadSpriteShader(){
     mSpriteShader = new Shader();
 
     if(!mSpriteShader->load("src/shaders/sprite.vert", "src/shaders/sprite.frag")){
@@ -185,7 +220,7 @@ bool Game::loadShaders(){
 	};
     
 
-    mSpriteShader->setVertexData(vertices, 4, indices, 6);
+    mSpriteShader->setVertexData(vertices, 4, indices, 6, 5);
 
     mSpriteShader->setAttrib("a_position", 3, 5, 0);
     mSpriteShader->setAttrib("a_texCoord", 2, 5, 3);
@@ -230,4 +265,22 @@ Texture* Game::getTexture(const std::string& filename){
     }
 
     return tex;
+}
+
+void Game::addCircle(CircleComponent* circle){
+    int drawOrder = circle->getDrawOrder();
+
+    auto iter = mCircles.begin();
+
+    for(; iter != mCircles.end(); ++iter){
+        if(drawOrder < (*iter)->getDrawOrder())
+            break;
+    }
+
+    mCircles.insert(iter, circle);
+}
+
+void Game::removeCircle(CircleComponent* circle){
+    auto iter = std::find(mCircles.begin(), mCircles.end(), circle);
+    mCircles.erase(iter);
 }

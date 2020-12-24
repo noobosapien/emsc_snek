@@ -2,6 +2,7 @@
 #include <SDL_opengl.h>
 #include <GLES2/gl2.h>
 #include <GL/glfw.h>
+#include <GLES3/gl3.h>
 
 #include <string>
 #include <sstream>
@@ -24,13 +25,14 @@ public:
     bool load(const std::string& vertName, const std::string& fragName);
     void unLoad();
 
-    void setActive();
+    unsigned int setActive();
 
     void setMatrixUniform(const char* name, const glm::mat4& matrix);
     void setFloatUniform(const char* name, const float fl);
-    
+    void setVec2Uniform(const char* name, const glm::vec2& vec);
+
     void setVertexData(float* verts, unsigned int numVerts, 
-    const unsigned int* indices, unsigned int numIndices);
+    const unsigned int* indices, unsigned int numIndices, unsigned int cols);
     void setAttrib(const char* name, unsigned int size, unsigned int stride,
     unsigned int offset);
 
@@ -43,6 +45,7 @@ private:
     GLuint mFragShader;
     GLuint mShaderProgram;
 
+    GLuint VAO;
     GLuint VBO;
     GLuint IBO;
 };

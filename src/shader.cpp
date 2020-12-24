@@ -31,9 +31,10 @@ void Shader::unLoad(){
     glDeleteShader(mFragShader);
 }
 
-void Shader::setActive(){
+unsigned int Shader::setActive(){
     glUseProgram(mShaderProgram);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindVertexArray(VAO);
+    return mShaderProgram;
 }
 
 void Shader::setAttrib(const char* name, unsigned int size, unsigned int stride,
@@ -51,13 +52,21 @@ void Shader::setAttrib(const char* name, unsigned int size, unsigned int stride,
 
 
 void Shader::setMatrixUniform(const char* name, const glm::mat4& matrix){
+    setActive();
     GLuint loc = glGetUniformLocation(mShaderProgram, name);
     glUniformMatrix4fv(loc, 1, GL_FALSE, &matrix[0][0]);
 }
 
 void Shader::setFloatUniform(const char* name, const float fl){
+    setActive();
     GLuint loc = glGetUniformLocation(mShaderProgram, name);
     glUniform1f(loc, fl);
+}
+
+void Shader::setVec2Uniform(const char* name, const glm::vec2& vec){
+    setActive();
+    GLuint loc = glGetUniformLocation(mShaderProgram, name);
+    glUniform2f(loc, vec.x, vec.y);
 }
 
 bool Shader::compileShader(std::string filename, GLenum shaderType, GLuint& outShader){
@@ -125,13 +134,16 @@ bool Shader::isValidProgram(){
 }
 
 void Shader::setVertexData(float* verts, unsigned int numVerts, 
-    const unsigned int* indices, unsigned int numIndices){
+    const unsigned int* indices, unsigned int numIndices, unsigned int cols){
 
     setActive();
     
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numVerts * 5, verts, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numVerts * cols, verts, GL_STATIC_DRAW);
     
     
     glGenBuffers(1, &IBO);
