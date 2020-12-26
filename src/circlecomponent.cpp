@@ -37,8 +37,8 @@ void CircleComponent::draw(Shader* shader){
 
     shader->setVec2Uniform("u_resolution", resolution);
     shader->setFloatUniform("u_radius", mRadius);
-    shader->setFloatUniform("u_thickness", thickness);
-    
+    shader->setVec2Uniform("u_mid", mOwner->getPosition());
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 

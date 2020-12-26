@@ -1,7 +1,7 @@
 #include "snake.h"
 
 Snake::Snake(Game* game): Actor(game){
-    setScale(0.06f);
+    setScale(.03f);
     SpriteComponent* sc = new SpriteComponent(this, 150);
     sc->setTexture(game->getTexture("src/textures/a.png"));
 
@@ -18,5 +18,5 @@ Snake::Snake(Game* game): Actor(game){
 Snake::~Snake(){}
 
 void Snake::updateActor(float delta){
-
+    
 }

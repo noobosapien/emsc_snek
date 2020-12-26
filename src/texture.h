@@ -31,4 +31,6 @@ private:
 
 };
 
+void flipTexMid32(SDL_Surface* surface);
+
 #endif

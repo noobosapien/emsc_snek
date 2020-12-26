@@ -34,7 +34,7 @@ void SpriteComponent::draw(Shader* shader){
         glm::mat4 projection = glm::mat4(1.f);
 
         model = mOwner->getWorldTransform();
-
+        
         view = glm::translate(view, glm::vec3(0.f, 0.f, -1.f));
 
         projection = glm::perspective(glm::radians(45.0f), 1024.f / 720.f, 0.1f, 100.0f);
