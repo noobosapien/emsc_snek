@@ -1,6 +1,5 @@
 precision mediump float;
 
-uniform float u_thickness;
 uniform float u_radius;
 uniform vec2 u_mid;
 
@@ -9,7 +8,8 @@ varying vec4 v_color;
 
 float circle(in vec2 _st, in float _radius, in vec2 _mid){
     vec2 dist =_st - _mid - vec2(0.5);
-	return smoothstep(_radius-(_radius*0.5), _radius+(_radius*0.1), dot(dist,dist)*1.0);
+	return step(_radius, dot(dist,dist)*1.0);
+	//return smoothstep(_radius-(_radius*0.5), _radius+(_radius*0.1), dot(dist,dist)*1.0);
 }
 
 void main(){

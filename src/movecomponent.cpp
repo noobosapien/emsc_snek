@@ -6,7 +6,7 @@ MoveComponent::MoveComponent(Actor* owner, int updateOrder):
 Component(owner, updateOrder),
 mDirection(RIGHT),
 mVelocity(glm::vec2(0.f, 0.f)),
-mSpeed(0.1){
+mSpeed(.4f){
 
 }
 
