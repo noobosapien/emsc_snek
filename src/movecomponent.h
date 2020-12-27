@@ -1,5 +1,6 @@
 #include "component.h"
 #include "actor.h"
+#include "snake.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -29,6 +30,7 @@ protected:
 
     void setDirection(DIRECTION dir){mDirection = dir;}
     DIRECTION getDirection(){return mDirection;}
+    // class Snake* getOwner(){return (class Snake*)mOwner;}
 
 private:
     DIRECTION mDirection;

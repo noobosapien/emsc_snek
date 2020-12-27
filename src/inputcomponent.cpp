@@ -30,5 +30,8 @@ void InputComponent::processInput(SDL_Event& event){
         if(key == mRightKey)
             if(getDirection() != LEFT)
                 setDirection(RIGHT);
+        
+        // if(key == SDLK_SPACE)
+        //     getOwner()->addBody();
     }
 }

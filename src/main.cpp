@@ -10,7 +10,7 @@ void loop(){
 int main(int argc, char* argv[]){
     game = new Game;
 
-    game->setDebug(false);
+    game->setDebug(true);
     bool success = game->initialize();
 
     if(success)

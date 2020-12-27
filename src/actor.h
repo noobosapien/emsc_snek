@@ -37,7 +37,7 @@ public:
     void computeWorldTransform();
     inline const glm::mat4& getWorldTransform(){return mWorldTransform;}
 
-    glm::vec2 getForward(){return glm::vec2(glm::cos(mRotation), glm::sin(mRotation));}
+    glm::vec2 getForward(){return glm::vec2(glm::cos(glm::radians(mRotation)), glm::sin(glm::radians(mRotation)));}
 
     State getState(){return mState;}
     void setState(State state){mState = state;}

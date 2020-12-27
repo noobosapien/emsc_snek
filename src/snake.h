@@ -6,6 +6,7 @@
 #include "spritecomponent.h"
 #include "inputcomponent.h"
 #include "circlecomponent.h"
+#include "body.h"
 
 #include <SDL2/SDL.h>
 
@@ -16,8 +17,12 @@ public:
 
     void updateActor(float delta) override;
 
+    glm::vec2 getNewBodyPos();
+    void addBody();
+
 private:
     class CircleComponent* mCircle;
+    std::vector<class Body*> mBodies;
 };
 
 #endif
