@@ -30,7 +30,7 @@ protected:
 
     void setDirection(DIRECTION dir){mDirection = dir;}
     DIRECTION getDirection(){return mDirection;}
-    // class Snake* getOwner(){return (class Snake*)mOwner;}
+    class Snake* getOwner(){return (class Snake*)mOwner;}
 
 private:
     DIRECTION mDirection;

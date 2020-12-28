@@ -16,6 +16,8 @@ Body::Body(Game* game, Snake* snake, Body* body): Actor(game), mSnake(snake), mP
         glm::vec2 newPos = mSnake->getNewBodyPos();
         setPosition(newPos);
     }
+
+    mFollow = new FollowComponent(this);
 }
 
 Body::~Body(){}
@@ -41,4 +43,8 @@ glm::vec2 Body::getNewBodyPos(){
     }
 
     return glm::vec2();
+}
+
+void Body::bodyDirChanged(){
+    mFollow->followDirChanged();
 }

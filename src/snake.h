@@ -10,7 +10,7 @@
 
 #include <SDL2/SDL.h>
 
-class Snake:Actor{
+class Snake: public Actor{
 public:
     Snake(Game* game);
     ~Snake();
@@ -19,10 +19,13 @@ public:
 
     glm::vec2 getNewBodyPos();
     void addBody();
+    void snakeDirChanged(){mDirChanged = true;}
 
 private:
     class CircleComponent* mCircle;
     std::vector<class Body*> mBodies;
+
+    bool mDirChanged;
 };
 
 #endif

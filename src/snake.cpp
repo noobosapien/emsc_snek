@@ -1,6 +1,6 @@
 #include "snake.h"
 
-Snake::Snake(Game* game): Actor(game){
+Snake::Snake(Game* game): Actor(game), mDirChanged(true){
     setScale(.03f);
     SpriteComponent* sc = new SpriteComponent(this, 150);
     sc->setTexture(game->getTexture("src/textures/a.png"));
@@ -15,12 +15,29 @@ Snake::Snake(Game* game): Actor(game){
     mCircle->setRadius(12.f);
 
     Body* mBody = new Body(game, this);
+    mBodies.push_back(mBody);
+
+    Body*mBody2 = new Body(game, this, mBodies.back());
+    mBodies.push_back(mBody2);
+
+    mBody2 = new Body(game, this, mBodies.back());
+    mBodies.push_back(mBody2);
+    mBody2 = new Body(game, this, mBodies.back());
+    mBodies.push_back(mBody2);
+    mBody2 = new Body(game, this, mBodies.back());
+    mBodies.push_back(mBody2);
 }
 
 Snake::~Snake(){}
 
 void Snake::updateActor(float delta){
-    
+    if(mDirChanged){
+        mDirChanged = false;
+
+        for(auto body: mBodies){
+            body->bodyDirChanged();
+        }
+    }
 }
 
 

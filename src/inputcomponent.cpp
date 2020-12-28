@@ -16,21 +16,29 @@ void InputComponent::processInput(SDL_Event& event){
         int key = event.key.keysym.sym;
 
         if(key == mUpKey)
-            if(getDirection() != DOWN)
+            if(getDirection() != DOWN){
                 setDirection(UP);
-        
+                getOwner()->snakeDirChanged();
+            }
+                
         if(key == mDownKey)
-            if(getDirection() != UP)
+            if(getDirection() != UP){
                 setDirection(DOWN);
-        
+                getOwner()->snakeDirChanged();
+            }
+            
         if(key == mLeftKey)
-            if(getDirection() != RIGHT)
+            if(getDirection() != RIGHT){
                 setDirection(LEFT);
-
+                getOwner()->snakeDirChanged();
+            }
+                
         if(key == mRightKey)
-            if(getDirection() != LEFT)
+            if(getDirection() != LEFT){
                 setDirection(RIGHT);
-        
+                getOwner()->snakeDirChanged();
+            }
+                
         // if(key == SDLK_SPACE)
         //     getOwner()->addBody();
     }
