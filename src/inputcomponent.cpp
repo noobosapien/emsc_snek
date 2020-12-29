@@ -39,7 +39,7 @@ void InputComponent::processInput(SDL_Event& event){
                 getOwner()->snakeDirChanged();
             }
                 
-        // if(key == SDLK_SPACE)
-        //     getOwner()->addBody();
+        if(key == SDLK_SPACE)
+            getOwner()->addBody();
     }
 }

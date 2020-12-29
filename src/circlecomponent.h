@@ -5,6 +5,7 @@
 #include "actor.h"
 #include "shader.h"
 #include "game.h"
+#include "camera.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -29,6 +30,6 @@ private:
     int mDrawOrder;
 };
 
-bool Intersect(const CircleComponent& a, const CircleComponent& b);
+bool Intersect(const CircleComponent* a, const CircleComponent* b);
 
 #endif

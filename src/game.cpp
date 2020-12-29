@@ -141,6 +141,7 @@ void Game::removeActor(Actor* actor){
 }
 
 void Game::loadData(){
+    mCamera = new Camera();
     Snake* snake = new Snake(this);
 }
 

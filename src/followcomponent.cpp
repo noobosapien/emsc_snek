@@ -21,18 +21,18 @@ void FollowComponent::update(float delta){
     }
 
     if(forward.y < -0.1f){
-        newPos = glm::vec2(ownerPos.x, ownerPos.y + 0.05f);
+        newPos = glm::vec2(ownerPos.x, ownerPos.y + 0.08f);
         mOwner->setRotation(-90.f);
     }else if(forward.y > 0.1f){
-        newPos = glm::vec2(ownerPos.x, ownerPos.y - 0.05f);
+        newPos = glm::vec2(ownerPos.x, ownerPos.y - 0.08f);
         mOwner->setRotation(90.f);
     }
 
     if(forward.x < -0.1f){
-        newPos = glm::vec2(ownerPos.x + 0.05f, ownerPos.y);
+        newPos = glm::vec2(ownerPos.x + 0.08f, ownerPos.y);
         mOwner->setRotation(180.f);
     }else if(forward.x > 0.1f){
-        newPos = glm::vec2(ownerPos.x - 0.05f, ownerPos.y);
+        newPos = glm::vec2(ownerPos.x - 0.08f, ownerPos.y);
         mOwner->setRotation(0.f);
     }
 

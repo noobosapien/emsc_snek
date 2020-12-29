@@ -23,6 +23,7 @@
 #include "inputcomponent.h"
 #include "snake.h"
 #include "circlecomponent.h"
+#include "camera.h"
 
 
 class Game
@@ -48,8 +49,10 @@ public:
 
     void setDebug(bool value) {mDebug = value;}
 
-    static const int WIN_WIDTH = 1024;
-    static const int WIN_HEIGHT = 720;
+    class Camera* getCamera(){return mCamera;}
+
+    static const int WIN_WIDTH = 800;
+    static const int WIN_HEIGHT = 800;
 
 private:
     void processInput();
@@ -84,6 +87,8 @@ private:
     std::unordered_map<std::string, Texture*> mTextures;
 
     std::vector<CircleComponent*> mCircles;
+
+    class Camera* mCamera;
 
 };
 

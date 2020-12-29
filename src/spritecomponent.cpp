@@ -8,6 +8,7 @@
 #include "spritecomponent.h"
 #include "actor.h"
 #include "shader.h"
+#include "camera.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -30,20 +31,14 @@ void SpriteComponent::draw(Shader* shader){
         shader->setActive();
         
         glm::mat4 model = glm::mat4(1.f);
-        glm::mat4 view = glm::mat4(1.f);
-        glm::mat4 projection = glm::mat4(1.f);
 
         model = mOwner->getWorldTransform();
-        
-        view = glm::translate(view, glm::vec3(0.f, 0.f, -1.f));
 
-        // projection = glm::perspective(glm::radians(45.0f), 1024.f / 720.f, 0.1f, 100.0f);
-        projection = glm::ortho(-.5f,.5f,-.5f,.5f,-1.0f,100.0f);
+        // projection = glm::perspective(glm::radians(45.0f), ((float)Game::WIN_WIDTH / (float)Game::WIN_HEIGHT), 0.1f, 100.0f);
 
         shader->setMatrixUniform("u_model", model);
-        shader->setMatrixUniform("u_view", view);
-        shader->setMatrixUniform("u_projection", projection);
-    
+        shader->setMatrixUniform("u_viewproj", mOwner->getGame()->getCamera()->getViewProj());
+
         mTexture->setActive();
         
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);

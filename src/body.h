@@ -24,6 +24,8 @@ public:
 
     void bodyDirChanged();
 
+    class CircleComponent* getCircle(){return mCircle;}
+
 private:
     class CircleComponent* mCircle;
     class Snake* mSnake;

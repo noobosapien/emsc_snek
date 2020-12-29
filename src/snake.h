@@ -7,6 +7,7 @@
 #include "inputcomponent.h"
 #include "circlecomponent.h"
 #include "body.h"
+#include "camera.h"
 
 #include <SDL2/SDL.h>
 

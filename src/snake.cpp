@@ -1,7 +1,7 @@
 #include "snake.h"
 
 Snake::Snake(Game* game): Actor(game), mDirChanged(true){
-    setScale(.03f);
+    setScale(.01f);
     SpriteComponent* sc = new SpriteComponent(this, 150);
     sc->setTexture(game->getTexture("src/textures/a.png"));
 
@@ -14,18 +14,8 @@ Snake::Snake(Game* game): Actor(game), mDirChanged(true){
     mCircle = new CircleComponent(this, 150);
     mCircle->setRadius(12.f);
 
-    Body* mBody = new Body(game, this);
-    mBodies.push_back(mBody);
-
-    Body*mBody2 = new Body(game, this, mBodies.back());
-    mBodies.push_back(mBody2);
-
-    mBody2 = new Body(game, this, mBodies.back());
-    mBodies.push_back(mBody2);
-    mBody2 = new Body(game, this, mBodies.back());
-    mBodies.push_back(mBody2);
-    mBody2 = new Body(game, this, mBodies.back());
-    mBodies.push_back(mBody2);
+    addBody();
+    addBody();
 }
 
 Snake::~Snake(){}
@@ -38,6 +28,15 @@ void Snake::updateActor(float delta){
             body->bodyDirChanged();
         }
     }
+
+    for(auto body: mBodies){
+        // printf("snake pos: %f %f  body pos: %f %f\n", getPosition().x, getPosition().y, body->getPosition().x, body->getPosition().y);
+        if(Intersect(mCircle, body->getCircle())){
+            printf("Colliding\n");
+        }
+    }
+
+    getGame()->getCamera()->setPosition(glm::vec3(getPosition().x, getPosition().y, 0.f));
 }
 
 
@@ -70,5 +69,5 @@ void Snake::addBody(){
         body = new Body(getGame(), this, nullptr);
     }
 
-    // mBodies.push_back(body);
+    mBodies.push_back(body);
 }

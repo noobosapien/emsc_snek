@@ -1,7 +1,7 @@
 #include "body.h"
 
 Body::Body(Game* game, Snake* snake, Body* body): Actor(game), mSnake(snake), mPrevBody(body){
-    setScale(.03f);
+    setScale(.01f);
 
     SpriteComponent* sc = new SpriteComponent(this, 100);
     sc->setTexture(game->getTexture("src/textures/b.png"));
