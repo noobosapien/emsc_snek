@@ -7,6 +7,13 @@ void loop(){
     game->runLoop();
 }
 
+extern "C"
+EMSCRIPTEN_KEEPALIVE
+
+void set_win_dim(int width, int height){
+    game->setWinDim(width, height);
+}
+
 int main(int argc, char* argv[]){
     game = new Game;
 

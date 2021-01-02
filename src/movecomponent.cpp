@@ -46,17 +46,12 @@ void MoveComponent::update(float delta){
 
     pos += mVelocity * mSpeed * delta;
 
-    //clamp
-    if(pos.x > 0.5){
-        pos.x = -0.5;
-    }else if(pos.x < -0.5){
-        pos.x = 0.5;
+    if(pos.x <= -2.4 || pos.x >= 2.4){
+        printf("GAME OVER\n");
     }
 
-    if(pos.y > 0.5){
-        pos.y = -0.5;
-    }else if(pos.y < -0.5){
-        pos.y =0.5;
+    if(pos.y <=-2.4 || pos.y >= 2.4){
+        printf("GAME OVER\n");
     }
 
     mOwner->setPosition(pos);

@@ -24,6 +24,7 @@
 #include "snake.h"
 #include "circlecomponent.h"
 #include "camera.h"
+#include "bordercomponent.h"
 
 
 class Game
@@ -33,6 +34,7 @@ public:
     bool initialize();
     void runLoop();
     bool shutDown();
+    void setWinDim(int width, int height);
 
     void addActor(Actor* actor);
     void removeActor(Actor* actor);
@@ -43,6 +45,9 @@ public:
     void addCircle(CircleComponent* circle);
     void removeCircle(CircleComponent* circle);
 
+    void addBorder(class BorderComponent* border);
+    void removeBorder(class BorderComponent* border);
+
     SDL_Renderer* getRenderer(){return renderer;}
 
     Texture* getTexture(const std::string& filename);
@@ -51,8 +56,8 @@ public:
 
     class Camera* getCamera(){return mCamera;}
 
-    static const int WIN_WIDTH = 800;
-    static const int WIN_HEIGHT = 800;
+    static int WIN_WIDTH;
+    static int WIN_HEIGHT;
 
 private:
     void processInput();
@@ -62,9 +67,11 @@ private:
     void loadData();
     void unloadData();
 
+    //shaders
     bool loadShaders();
     bool loadSpriteShader();
     bool loadCircleShader();
+    bool loadBorderShader();
 
     bool mDebug;
 
@@ -81,12 +88,15 @@ private:
 
     Shader* mSpriteShader;
     Shader* mCircleShader;
+    Shader* mBorderShader;
 
     std::vector<SpriteComponent*> mSprites;
 
     std::unordered_map<std::string, Texture*> mTextures;
 
     std::vector<CircleComponent*> mCircles;
+
+    std::vector<class BorderComponent*> mBorders;
 
     class Camera* mCamera;
 

@@ -5,6 +5,9 @@
 {
 }
 
+int Game::WIN_WIDTH = 800;
+int Game::WIN_HEIGHT = 800;
+
 bool Game::initialize(){
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -14,6 +17,7 @@ bool Game::initialize(){
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
     SDL_CreateWindowAndRenderer(Game::WIN_WIDTH, Game::WIN_HEIGHT, 0, &window, &renderer);
+    // SDL_CreateWindowAndRenderer(1920, 1920, 0, &window, &renderer);
 
     gl_context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, gl_context);
@@ -23,6 +27,7 @@ bool Game::initialize(){
     }
     
     glViewport(0, 0, Game::WIN_WIDTH, Game::WIN_HEIGHT);
+    // glViewport(0, 0, 1920, 1920);
     
     loadData();
     
@@ -45,6 +50,28 @@ bool Game::shutDown(){
     mSpriteShader->unLoad();
     delete mSpriteShader;
     return true;
+
+    //delete actors
+    while(!mActors.empty()){
+        delete mActors.back();
+    }
+}
+
+void Game::setWinDim(int width, int height){
+
+    if(height > width){
+        Game::WIN_HEIGHT = height;
+        Game::WIN_WIDTH = height;
+
+        SDL_SetWindowSize(window, height, height);
+        glViewport(0, 0, height, height);
+    }else{
+        Game::WIN_HEIGHT = width;
+        Game::WIN_WIDTH = width;
+
+        SDL_SetWindowSize(window, width, width);
+        glViewport(0, 0, width, width);
+    }
 }
 
 //private
@@ -106,6 +133,10 @@ void Game::generateOutput(){
     
     //set shaders, vertex arrays and draw the sprites
 
+    for(auto border: mBorders){
+        border->draw(mBorderShader);
+    }
+
     for(auto sprite: mSprites){
         sprite->draw(mSpriteShader);
     }
@@ -143,6 +174,10 @@ void Game::removeActor(Actor* actor){
 void Game::loadData(){
     mCamera = new Camera();
     Snake* snake = new Snake(this);
+
+    //to add the border create an actor
+    Actor* temp = new Actor(this);
+    BorderComponent* border = new BorderComponent(temp, 100);
 }
 
 void Game::unloadData(){
@@ -166,6 +201,9 @@ bool Game::loadShaders(){
         return false;
     
     if(!loadSpriteShader())
+        return false;
+    
+    if(!loadBorderShader())
         return false;
     
     return true;
@@ -229,6 +267,37 @@ bool Game::loadSpriteShader(){
     return true;
 }
 
+bool Game::loadBorderShader(){
+    mBorderShader = new Shader();
+
+    if(!mBorderShader->load("src/shaders/border.vert", "src/shaders/border.frag")){
+        return false;
+    }
+
+    mBorderShader->setActive();
+
+    float vertices[] = {
+        -3.f,  3.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f,
+		 3.f,  3.f, 0.f, 1.f, 1.f, 0.f, 0.f, 0.f,
+		 3.f, -3.f, 0.f, 1.f, 0.f, 0.f, 0.f, 0.f,
+		-3.f, -3.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f
+    };
+
+	unsigned int indices[] = {
+		0, 1, 2,
+        2, 3, 0
+	};
+    
+
+    mBorderShader->setVertexData(vertices, 4, indices, 6, 8);
+
+    mBorderShader->setAttrib("a_position", 3, 8, 0);
+    mBorderShader->setAttrib("a_vertCoord", 2, 8, 3);
+    mBorderShader->setAttrib("a_color", 3, 8, 5);
+    
+    return true;
+}
+
 void Game::addSprite(SpriteComponent* sprite){
     int drawOrder = sprite->getDrawOrder();
 
@@ -284,4 +353,22 @@ void Game::addCircle(CircleComponent* circle){
 void Game::removeCircle(CircleComponent* circle){
     auto iter = std::find(mCircles.begin(), mCircles.end(), circle);
     mCircles.erase(iter);
+}
+
+void Game::addBorder(BorderComponent* border){
+    int drawOrder = border->getDrawOrder();
+
+    auto iter = mBorders.begin();
+
+    for(; iter != mBorders.end(); ++iter){
+        if(drawOrder < (*iter)->getDrawOrder())
+            break;
+    }
+
+    mBorders.insert(iter, border);
+}
+
+void Game::removeBorder(BorderComponent* border){
+    auto iter = std::find(mBorders.begin(), mBorders.end(), border);
+    mBorders.erase(iter);
 }
