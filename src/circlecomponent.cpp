@@ -31,9 +31,7 @@ void CircleComponent::draw(Shader* shader){
     shader->setMatrixUniform("u_model", model);
     shader->setMatrixUniform("u_viewproj", mOwner->getGame()->getCamera()->getViewProj());
 
-    shader->setVec2Uniform("u_resolution", resolution);
     shader->setFloatUniform("u_radius", mRadius);
-    shader->setVec2Uniform("u_mid", mOwner->getPosition());
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }

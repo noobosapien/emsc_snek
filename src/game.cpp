@@ -61,16 +61,16 @@ void Game::setWinDim(int width, int height){
 
     if(height > width){
         Game::WIN_HEIGHT = height;
-        Game::WIN_WIDTH = height;
-
-        SDL_SetWindowSize(window, height, height);
-        glViewport(0, 0, height, height);
-    }else{
-        Game::WIN_HEIGHT = width;
         Game::WIN_WIDTH = width;
 
-        SDL_SetWindowSize(window, width, width);
-        glViewport(0, 0, width, width);
+        SDL_SetWindowSize(window, width, height);
+        glViewport(-height/2 + width/2, 0, height, height);
+    }else{
+        Game::WIN_HEIGHT = height;
+        Game::WIN_WIDTH = width;
+
+        SDL_SetWindowSize(window, width, height);
+        glViewport(0, -width/2 + height/2, width, width);
     }
 }
 
@@ -218,10 +218,10 @@ bool Game::loadCircleShader(){
     mCircleShader->setActive();
 
     float vertices[] = {
-        -1.f,  1.f, 0.f, 0.f, 0.f, 0.f,
-		 1.f,  1.f, 0.f, 0.f, 0.f, 0.f,
-		 1.f, -1.f, 0.f, 0.f, 0.f, 0.f,
-		-1.f, -1.f, 0.f, 0.f, 0.f, 0.f
+        -1.f,  1.f, 0.f, 0.f, 0.3f, 0.f,
+		 1.f,  1.f, 0.f, 0.f, 0.3f, 0.f,
+		 1.f, -1.f, 0.f, 0.f, 0.3f, 0.f,
+		-1.f, -1.f, 0.f, 0.f, 0.3f, 0.f
     };
 
     unsigned int indices[] = {
