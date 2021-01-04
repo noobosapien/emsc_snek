@@ -2,8 +2,9 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
-Camera::Camera(float left, float right, float bot, float top): mPosition(0.f), mRotation(0.f){
-    mProjection = glm::ortho(left, right, bot, top, -1.f, 10.f);
+Camera::Camera(float left, float right, float bot, float top): mPosition(0.f), mRotation(0.f),
+mLeft(left), mRight(right), mTop(top), mBot(bot){
+    mProjection = glm::ortho(mLeft, mRight, mBot, mTop, -1.f, 10.f);
     mView = glm::mat4(1.f);
 
     recomputeViewProj();
@@ -18,4 +19,15 @@ void Camera::recomputeViewProj(){
     mView = glm::inverse(translate);
 
     mViewProj = mProjection * mView;
+}
+
+void Camera::addViewportVertices(float left, float right, float bot, float top){
+    mLeft += left;
+    mRight += right;
+    mTop += top;
+    mBot += bot;
+
+    mProjection = glm::ortho(mLeft, mRight, mBot, mTop, -1.f, 10.f);
+
+    recomputeViewProj();
 }

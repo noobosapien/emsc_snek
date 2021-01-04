@@ -7,7 +7,7 @@
 class Camera{
 
 public:
-    Camera(float left = -.5f, float right = .5f, float bot = -.5f, float top = .5f);
+    Camera(float left = -.3f, float right = .3f, float bot = -.3f, float top = .3f);
     ~Camera();
 
     glm::mat4& getViewProj(){return mViewProj;}
@@ -16,6 +16,8 @@ public:
 
     void setPosition(glm::vec3 pos){mPosition = pos; recomputeViewProj();}
     void setRotation(float rot){mRotation = rot; recomputeViewProj();}
+
+    void addViewportVertices(float left, float right, float top, float bot);
 
 private:
     void recomputeViewProj();
@@ -26,6 +28,11 @@ private:
 
     glm::vec3 mPosition;
     float mRotation;
+
+    float mLeft;
+    float mRight;
+    float mTop;
+    float mBot;
 };
 
 #endif

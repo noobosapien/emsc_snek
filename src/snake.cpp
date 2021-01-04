@@ -70,4 +70,6 @@ void Snake::addBody(){
     }
 
     mBodies.push_back(body);
+
+    getGame()->getCamera()->addViewportVertices(-0.1, 0.1, -0.1, 0.1);
 }
