@@ -2,6 +2,7 @@
 
 WebsockClient::WebsockClient(){
     mState = ST_UNINITIALIZED;
+    mPlayerID = 0;
 }
 
 
@@ -9,17 +10,21 @@ WebsockClient::~WebsockClient(){
 
 }
 
-bool WebsockClient::staticInit(){
+bool WebsockClient::staticInit(std::string name){
     sInstance = new WebsockClient();
-    return sInstance->init("ws://localhost:3001");
+    return sInstance->init("ws://localhost:3001", name);
 }
 
 void WebsockClient::sendOutgoing(){
     switch (mState){
+        case ST_UNINITIALIZED:
+            break;
         case ST_SAYINGHELLO:
-            updateSayingHello();
+            sendHelloPacket();
         case ST_WELCOMED:
-            updateSendingInputPacket();
+            sendInputPacket();
+        default:
+            break;
     }
 }
 
@@ -36,8 +41,9 @@ void WebsockClient::processPacket(InputStream& inputStream){
     }
 }
 
-bool WebsockClient::init(std::string address){
+bool WebsockClient::init(std::string address, std::string name){
     mState = ST_SAYINGHELLO;
+    mName = name;
 
     if(!emscripten_websocket_is_supported())
         return false;
@@ -57,26 +63,31 @@ bool WebsockClient::init(std::string address){
 
 }
 
-void WebsockClient::updateSayingHello(){
-    
-}
-
 void WebsockClient::sendHelloPacket(){
-    
+    OutputStream helloPacket;
+
+    helloPacket.write(kHelloCC);
+    helloPacket.write(mName);
+
+    sendMessage(helloPacket);
 }
 
 void WebsockClient::handleWelcomePacket(InputStream& inputStream){
-    
+    if(mState == ST_SAYINGHELLO){
+        int playerId;
+        inputStream.read(playerId);
+
+        mPlayerID = playerId;
+        mState = ST_WELCOMED;
+    }
 }
 
 void WebsockClient::handleStatePacket(InputStream& inputStream){
-    
-}
-
-void WebsockClient::updateSendingInputPacket(){
-    
+    if(mState == ST_WELCOMED){
+        mReplicationManager.read(inputStream);
+    }
 }
 
 void WebsockClient::sendInputPacket(){
-    
+    //todo
 }

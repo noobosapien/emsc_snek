@@ -191,7 +191,7 @@ Module['FS_createPath']('/src', 'textures', true, true);
     }
   
    }
-   loadPackage({"files": [{"filename": "/src/shaders/border.frag", "start": 0, "end": 731, "audio": 0}, {"filename": "/src/shaders/border.vert", "start": 731, "end": 1054, "audio": 0}, {"filename": "/src/shaders/circle.frag", "start": 1054, "end": 1498, "audio": 0}, {"filename": "/src/shaders/circle.vert", "start": 1498, "end": 1878, "audio": 0}, {"filename": "/src/shaders/sprite.frag", "start": 1878, "end": 2040, "audio": 0}, {"filename": "/src/shaders/sprite.vert", "start": 2040, "end": 2429, "audio": 0}, {"filename": "/src/textures/a.png", "start": 2429, "end": 3749, "audio": 0}, {"filename": "/src/textures/b.png", "start": 3749, "end": 5005, "audio": 0}, {"filename": "/src/textures/c.png", "start": 5005, "end": 492442, "audio": 0}], "remote_package_size": 492442, "package_uuid": "d4a01362-0b2a-476f-a460-ede473a7ce8c"});
+   loadPackage({"files": [{"filename": "/src/shaders/border.frag", "start": 0, "end": 731, "audio": 0}, {"filename": "/src/shaders/border.vert", "start": 731, "end": 1054, "audio": 0}, {"filename": "/src/shaders/circle.frag", "start": 1054, "end": 1498, "audio": 0}, {"filename": "/src/shaders/circle.vert", "start": 1498, "end": 1878, "audio": 0}, {"filename": "/src/shaders/sprite.frag", "start": 1878, "end": 2040, "audio": 0}, {"filename": "/src/shaders/sprite.vert", "start": 2040, "end": 2429, "audio": 0}, {"filename": "/src/textures/a.png", "start": 2429, "end": 3749, "audio": 0}, {"filename": "/src/textures/b.png", "start": 3749, "end": 5005, "audio": 0}, {"filename": "/src/textures/c.png", "start": 5005, "end": 492442, "audio": 0}], "remote_package_size": 492442, "package_uuid": "8d7efd5c-c6b2-409c-9ef8-76a3fd8a2da2"});
   
   })();
   
