@@ -26,6 +26,8 @@
 #include "camera.h"
 #include "bordercomponent.h"
 
+#include "network/websockclient.h"
+
 
 class Game
 {
@@ -66,6 +68,7 @@ private:
 
     void loadData();
     void unloadData();
+    void loadNetwork();
 
     //shaders
     bool loadShaders();
@@ -99,6 +102,8 @@ private:
     std::vector<class BorderComponent*> mBorders;
 
     class Camera* mCamera;
+
+    class WebsockClient* mWebSocket;
 
 };
 

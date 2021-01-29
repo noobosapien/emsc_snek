@@ -7,11 +7,11 @@
 class InputStream{
     
 public:
-    InputStream(char* buffer, uint32_t bitCount);
+    InputStream(uint8_t* buffer, uint32_t bitCount);
     InputStream(InputStream& inputStream);
     ~InputStream();
 
-    const char* getBufferPtr() const;
+    const uint8_t* getBufferPtr() const;
     uint32_t getRemainingBitCount() const;
 
     void readBits(uint8_t& outData, uint32_t bitCount);
@@ -39,7 +39,7 @@ public:
 
 
 private:
-    char* mBuffer;
+    uint8_t* mBuffer;
     uint32_t mBitHead;
     uint32_t mBitCapacity;
     bool mIsBufferOwner;

@@ -1,6 +1,6 @@
 #include "inoutstreams.h"
 
-InputStream::InputStream(char* inBuffer, uint32_t bitCount):
+InputStream::InputStream(uint8_t* inBuffer, uint32_t bitCount):
 mBuffer(inBuffer), mBitCapacity(bitCount), mBitHead(0), mIsBufferOwner(false)
 {
 
@@ -13,7 +13,7 @@ mIsBufferOwner(true)
 {
     int byteCount = mBitCapacity / 8;
 
-    mBuffer = static_cast<char*> (malloc(byteCount));
+    mBuffer = static_cast<uint8_t*> (malloc(byteCount));
 
     memcpy(mBuffer, other.mBuffer, byteCount);
 }
@@ -23,7 +23,7 @@ InputStream::~InputStream(){
         free(mBuffer);
 }
 
-const char* InputStream::getBufferPtr() const{
+const uint8_t* InputStream::getBufferPtr() const{
     return mBuffer;
 }
 

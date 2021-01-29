@@ -2,14 +2,35 @@
 #define REPLICATIONMANAGER_H
 
 #include "inoutstreams.h"
+#include "../game.h"
+#include "../food.h"
+
+class Food;
 
 class ReplicationManager{
 
 public:
-    ReplicationManager();
-    ~ReplicationManager();
+
+    enum ReplicationAction{
+        RA_CREATE,
+        RA_UPDATE,
+        RA_DESTROY
+    };
+
+    ReplicationManager() = default;
+    ~ReplicationManager() = default;
+
+    ReplicationManager(Game* game);
 
     void read(InputStream& inStream);
+
+private:
+    void readAndCreate(InputStream& inputStream);
+    void readAndUpdate(InputStream& inputStream);
+    void readAndDestroy(InputStream& inputStream);
+
+    Game* mGame;
+    Food* mFood;
 
 };
 

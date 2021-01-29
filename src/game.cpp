@@ -30,6 +30,7 @@ bool Game::initialize(){
     // glViewport(0, 0, 1920, 1920);
     
     loadData();
+    loadNetwork();
     
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -90,6 +91,8 @@ void Game::processInput(){
 
 void Game::updateGame(){
     while(!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 16)); //60fps
+
+    mWebSocket->processAllPackets();
 
     mDeltaTime = static_cast<float>(SDL_GetTicks() - mTicksCount) / 1000;
     
@@ -190,6 +193,11 @@ void Game::unloadData(){
         delete i.second;
     }
     mTextures.clear();
+}
+
+void Game::loadNetwork(){
+    WebsockClient::staticInit(this, "Test");
+    mWebSocket = WebsockClient::sInstance;
 }
 
 /*

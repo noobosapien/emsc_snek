@@ -1,6 +1,7 @@
 #include "websockclient.h"
 
-WebsockClient::WebsockClient(){
+WebsockClient::WebsockClient(Game* game): mGame(game){
+    mReplicationManager = new ReplicationManager(game);
     mState = ST_UNINITIALIZED;
     mPlayerID = 0;
 }
@@ -10,9 +11,11 @@ WebsockClient::~WebsockClient(){
 
 }
 
-bool WebsockClient::staticInit(std::string name){
-    sInstance = new WebsockClient();
-    return sInstance->init("ws://localhost:3001", name);
+WebsockClient* WebsockClient::sInstance = nullptr;
+
+bool WebsockClient::staticInit(Game* game, std::string name){
+    WebsockClient::sInstance = new WebsockClient(game);
+    return WebsockClient::sInstance->init("ws://localhost:3001", name);
 }
 
 void WebsockClient::sendOutgoing(){
@@ -32,9 +35,11 @@ void WebsockClient::processPacket(InputStream& inputStream){
     uint32_t packetType;
 
     inputStream.read(packetType);
+    // printf("%u\n", packetType);
 
     switch(packetType){
         case kWelcomeCC:
+            printf("Here\n");
             handleWelcomePacket(inputStream);
         case kStateCC:
             handleStatePacket(inputStream);
@@ -84,10 +89,54 @@ void WebsockClient::handleWelcomePacket(InputStream& inputStream){
 
 void WebsockClient::handleStatePacket(InputStream& inputStream){
     if(mState == ST_WELCOMED){
-        mReplicationManager.read(inputStream);
+        mReplicationManager->read(inputStream);
+    }
+}
+
+void WebsockClient::processAllPackets(){
+    while(!mPacketQueue.empty()){
+        mReceivedPacket& packet = mPacketQueue.front();
+        processPacket(packet.getInStream());
+        mPacketQueue.pop();
     }
 }
 
 void WebsockClient::sendInputPacket(){
     //todo
+}
+
+
+EM_BOOL WebsockClient::onOpen(int eventType, const EmscriptenWebSocketOpenEvent* websockEvent, void* userData){
+    puts("Connected to server\n");
+    return EM_TRUE;
+}
+
+
+EM_BOOL WebsockClient::onError(int eventType, const EmscriptenWebSocketErrorEvent* websockEvent, void* userData){
+    puts("Error\n");
+    return EM_TRUE;
+}
+
+
+EM_BOOL WebsockClient::onClose(int eventType, const EmscriptenWebSocketCloseEvent* websockEvent, void* userData){
+    puts("Connection closed\n");
+    return EM_TRUE;
+}
+
+
+EM_BOOL WebsockClient::onMessage(int eventType, const EmscriptenWebSocketMessageEvent* websockEvent, void* userData){
+
+    unsigned char* packet = static_cast<unsigned char*>(websockEvent->data);
+    InputStream inStream(packet, sizeof(packet) * 8);
+    mReceivedPacket recvPacket(inStream);
+    printf("%s\n", inStream.getBufferPtr());
+    WebsockClient::sInstance->mPacketQueue.emplace(recvPacket);
+
+    return EM_TRUE;
+}
+
+
+EM_BOOL WebsockClient::sendMessage(OutputStream& out){
+
+    return EM_TRUE;
 }

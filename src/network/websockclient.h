@@ -3,10 +3,14 @@
 #define WEBSOCKCLIENT_H
 
 #include <cstdint>
+#include <stdio.h>
+#include <queue>
+#include <list>
 #include <string>
 #include "emscripten/websocket.h"
 #include "inoutstreams.h"
 #include "replicationmanager.h"
+#include "../game.h"
 
 class WebsockClient{
     
@@ -22,15 +26,30 @@ public:
     static const uint32_t kStateCC  = 'STAT';
     static const uint32_t kInputCC  = 'INPT';
 
-    static bool staticInit(std::string name);
+    static bool staticInit(Game* game, std::string name);
     void sendOutgoing();
     void processPacket(InputStream& inputStream);
+    void processAllPackets(); //call this from the game object.
 
     static WebsockClient* sInstance;
 
 private:
-    WebsockClient();
+    WebsockClient(Game* game);
     ~WebsockClient();
+
+    Game* mGame;
+
+    class mReceivedPacket{
+        public:
+            mReceivedPacket(InputStream& inStream): mPacketBuffer(inStream){
+
+            }
+            InputStream& getInStream(){return mPacketBuffer;}
+        private:
+            InputStream mPacketBuffer;
+    };
+
+    std::queue<mReceivedPacket, std::list<mReceivedPacket>> mPacketQueue;
 
     bool init(std::string address, std::string name);
 
@@ -46,11 +65,11 @@ private:
     static EM_BOOL onError(int eventType, const EmscriptenWebSocketErrorEvent* websockEvent, void* userData);
     static EM_BOOL onClose(int eventType, const EmscriptenWebSocketCloseEvent* websockEvent, void* userData);
     static EM_BOOL onMessage(int eventType, const EmscriptenWebSocketMessageEvent* websockEvent, void* userData);
-    static EM_BOOL sendMessage(OutputStream out);
+    static EM_BOOL sendMessage(OutputStream& out);
 
     NetworkClientState mState;
 
-    ReplicationManager mReplicationManager;
+    class ReplicationManager* mReplicationManager;
 
     EMSCRIPTEN_WEBSOCKET_T mSocket;
     EMSCRIPTEN_RESULT mResult;
