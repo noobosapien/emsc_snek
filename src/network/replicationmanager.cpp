@@ -6,11 +6,13 @@ ReplicationManager::ReplicationManager(Game* game)
 }
 
 void ReplicationManager::read(InputStream& inStream){
-    
-    while(inStream.getRemainingBitCount() > 32){
 
-        uint8_t action;
-        inStream.read(action, 2);
+    // while(inStream.getRemainingBitCount() > 8){
+
+        uint32_t action;//doesn't have to be 32bits
+        inStream.read(action);
+
+        printf("Replication manager read Here action: %u\n", action);
 
         switch(action){
             case RA_CREATE:
@@ -25,24 +27,30 @@ void ReplicationManager::read(InputStream& inStream){
             default:
                 break;
         }
-    }
+    // }
 }
 
 void ReplicationManager::readAndCreate(InputStream& inStream){
-    
     uint32_t nameCC;
-    inStream.read(nameCC);
 
-    switch (nameCC)
-    {
-    case 'FOOD':
-        mFood = new Food(mGame);
-        mFood->read(inStream);
-        break;
-    
-    default:
-        break;
+    while(inStream.getRemainingBitCount() > 8){
+        inStream.read(nameCC);
+
+        if (nameCC == 'STOP')
+            break;
+
+        switch (nameCC)
+        {
+        case 'FOOD':
+            mFood = new Food(mGame);
+            mFood->read(inStream);
+            break;
+        
+        default:
+            break;
+        }
     }
+    
 }
 
 void ReplicationManager::readAndUpdate(InputStream& inStream){

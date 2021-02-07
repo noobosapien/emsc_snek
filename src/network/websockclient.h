@@ -68,13 +68,15 @@ private:
     static EM_BOOL sendMessage(OutputStream& out);
 
     NetworkClientState mState;
+    bool helloPacketSent;
 
     class ReplicationManager* mReplicationManager;
 
     EMSCRIPTEN_WEBSOCKET_T mSocket;
     EMSCRIPTEN_RESULT mResult;
+    bool connected;
 
-    int mPlayerID;
+    uint32_t mPlayerID;
     std::string mName;
 };
 

@@ -93,6 +93,7 @@ void Game::updateGame(){
     while(!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 16)); //60fps
 
     mWebSocket->processAllPackets();
+    mWebSocket->sendOutgoing();
 
     mDeltaTime = static_cast<float>(SDL_GetTicks() - mTicksCount) / 1000;
     

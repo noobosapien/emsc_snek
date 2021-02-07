@@ -4,6 +4,8 @@ WebsockClient::WebsockClient(Game* game): mGame(game){
     mReplicationManager = new ReplicationManager(game);
     mState = ST_UNINITIALIZED;
     mPlayerID = 0;
+    helloPacketSent = false;
+    connected = false;
 }
 
 
@@ -23,7 +25,8 @@ void WebsockClient::sendOutgoing(){
         case ST_UNINITIALIZED:
             break;
         case ST_SAYINGHELLO:
-            sendHelloPacket();
+            if(!helloPacketSent && connected)
+                sendHelloPacket();
         case ST_WELCOMED:
             sendInputPacket();
         default:
@@ -32,18 +35,22 @@ void WebsockClient::sendOutgoing(){
 }
 
 void WebsockClient::processPacket(InputStream& inputStream){
-    uint32_t packetType;
-
+    uint32_t packetType(0);
     inputStream.read(packetType);
-    // printf("%u\n", packetType);
+    printf("packetType: %u\n", packetType);
 
     switch(packetType){
         case kWelcomeCC:
-            printf("Here\n");
             handleWelcomePacket(inputStream);
+            break;
         case kStateCC:
             handleStatePacket(inputStream);
+            break;
+        default:
+            break;
     }
+
+    printf("Bytes remaining: %u\n", inputStream.getRemainingBitCount());
 }
 
 bool WebsockClient::init(std::string address, std::string name){
@@ -75,12 +82,15 @@ void WebsockClient::sendHelloPacket(){
     helloPacket.write(mName);
 
     sendMessage(helloPacket);
+    helloPacketSent = true;
 }
 
 void WebsockClient::handleWelcomePacket(InputStream& inputStream){
+
     if(mState == ST_SAYINGHELLO){
-        int playerId;
+        uint32_t playerId(0);
         inputStream.read(playerId);
+        printf("handleWelcomePacket playerId: %u  inputStream: %s\n", playerId, inputStream.getBufferPtr());
 
         mPlayerID = playerId;
         mState = ST_WELCOMED;
@@ -88,6 +98,7 @@ void WebsockClient::handleWelcomePacket(InputStream& inputStream){
 }
 
 void WebsockClient::handleStatePacket(InputStream& inputStream){
+    
     if(mState == ST_WELCOMED){
         mReplicationManager->read(inputStream);
     }
@@ -108,6 +119,7 @@ void WebsockClient::sendInputPacket(){
 
 EM_BOOL WebsockClient::onOpen(int eventType, const EmscriptenWebSocketOpenEvent* websockEvent, void* userData){
     puts("Connected to server\n");
+    WebsockClient::sInstance->connected = true;
     return EM_TRUE;
 }
 
@@ -127,9 +139,10 @@ EM_BOOL WebsockClient::onClose(int eventType, const EmscriptenWebSocketCloseEven
 EM_BOOL WebsockClient::onMessage(int eventType, const EmscriptenWebSocketMessageEvent* websockEvent, void* userData){
 
     unsigned char* packet = static_cast<unsigned char*>(websockEvent->data);
-    InputStream inStream(packet, sizeof(packet) * 8);
-    mReceivedPacket recvPacket(inStream);
-    printf("%s\n", inStream.getBufferPtr());
+    InputStream *inStream = new InputStream(packet, websockEvent->numBytes * 8);
+    mReceivedPacket recvPacket(*inStream);
+    printf("onMessage: %s, packet: %s, numBytes: %u\n", inStream->getBufferPtr(), packet, websockEvent->numBytes);
+
     WebsockClient::sInstance->mPacketQueue.emplace(recvPacket);
 
     return EM_TRUE;
@@ -138,5 +151,9 @@ EM_BOOL WebsockClient::onMessage(int eventType, const EmscriptenWebSocketMessage
 
 EM_BOOL WebsockClient::sendMessage(OutputStream& out){
 
-    return EM_TRUE;
+    if(WebsockClient::sInstance->connected){
+        emscripten_websocket_send_binary(WebsockClient::sInstance->mSocket, (void*)out.getBufferPtr(), out.getByteLength());
+        return EM_TRUE;
+    }
+    return EM_FALSE;
 }

@@ -35,9 +35,9 @@ void InputStream::readBits(uint8_t& outData, uint32_t bitCount){
     
     uint32_t byteOffset = mBitHead >> 3;
     uint32_t bitOffset = mBitHead & 0x7;
-
+    // printf("bitOffset: %u  byteOffset: %u\n", bitOffset, byteOffset);
+    // printf("bitHead: %u\n", mBitHead);
     outData = static_cast<uint8_t>(mBuffer[byteOffset]) >> bitOffset;
-
     uint32_t bitsFreeThisByte = 8 - bitOffset;
 
     if(bitsFreeThisByte < bitCount){
