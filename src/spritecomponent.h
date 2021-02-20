@@ -4,7 +4,7 @@
 #ifndef SPRITE_COMPONENT_H
 #define SPRITE_COMPONENT_H
 
-class SpriteComponent:Component{
+class SpriteComponent: public Component{
 
 public:
     SpriteComponent(class Actor* owner, int drawOrder = 100);
