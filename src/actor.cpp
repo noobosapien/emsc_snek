@@ -10,15 +10,14 @@ mRotation(0.0f),
 mGame(game),
 mRecomputeWorldTransform(true)
 {
-    mGame->addActor(this); new Component(this);
+    mGame->addActor(this);
 }
 
 Actor::~Actor(){
-    mGame->removeActor(this);
-    
     for(auto component: mComponents){
         delete component;
     }
+    mGame->removeActor(this);
 }
 
 void Actor::update(float delta){

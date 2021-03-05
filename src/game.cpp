@@ -164,12 +164,14 @@ void Game::addActor(Actor* actor){
 void Game::removeActor(Actor* actor){
     auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
     if(iter != mPendingActors.end()){
+
         std::iter_swap(iter, mPendingActors.end() - 1);
         mPendingActors.pop_back();
     }
 
     iter = std::find(mActors.begin(), mActors.end(), actor);
     if(iter != mActors.end()){
+
         std::iter_swap(iter, mActors.end() - 1);
         mActors.pop_back();
     }
@@ -387,4 +389,12 @@ void Game::addBorder(BorderComponent* border){
 void Game::removeBorder(BorderComponent* border){
     auto iter = std::find(mBorders.begin(), mBorders.end(), border);
     mBorders.erase(iter);
+}
+
+void Game::setSnake(Snake* snake){
+    mSnake = snake;
+}
+
+Snake* Game::getSnake(){
+    return mSnake;
 }

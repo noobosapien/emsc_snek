@@ -50,6 +50,9 @@ public:
     void addBorder(class BorderComponent* border);
     void removeBorder(class BorderComponent* border);
 
+    void setSnake(class Snake* snake);
+    class Snake* getSnake();
+
     SDL_Renderer* getRenderer(){return renderer;}
 
     Texture* getTexture(const std::string& filename);
@@ -88,6 +91,8 @@ private:
     std::vector<Actor*> mActors;
     std::vector<Actor*> mPendingActors;
     bool mUpdatingActors;
+
+    class Snake* mSnake;
 
     Shader* mSpriteShader;
     Shader* mCircleShader;

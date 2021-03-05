@@ -1,11 +1,25 @@
 precision mediump float;
 
 uniform float u_radius;
+uniform vec2 u_resolution;
+uniform vec2 u_center;
 
 varying vec4 v_color;
+varying vec3 v_position;
+
+float circle(vec2 st, vec2 center, float radius){
+
+	return 1.0;
+}
+
 
 void main(){
-	gl_FragColor = v_color;
+
+	float radius = u_radius / u_resolution.x;
+	vec2 st = gl_FragCoord.xy / u_resolution.xy;
+
+	vec3 color = vec3(1.0, 1.0, 0.0) * circle(st, u_center, radius);
+	gl_FragColor = vec4(color, 0.6);
 }
 
 

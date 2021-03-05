@@ -30,6 +30,7 @@ public:
     void sendOutgoing();
     void processPacket(InputStream& inputStream);
     void processAllPackets(); //call this from the game object.
+    static EM_BOOL sendMessage(OutputStream& out);
 
     static WebsockClient* sInstance;
 
@@ -65,7 +66,6 @@ private:
     static EM_BOOL onError(int eventType, const EmscriptenWebSocketErrorEvent* websockEvent, void* userData);
     static EM_BOOL onClose(int eventType, const EmscriptenWebSocketCloseEvent* websockEvent, void* userData);
     static EM_BOOL onMessage(int eventType, const EmscriptenWebSocketMessageEvent* websockEvent, void* userData);
-    static EM_BOOL sendMessage(OutputStream& out);
 
     NetworkClientState mState;
     bool helloPacketSent;

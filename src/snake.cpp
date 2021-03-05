@@ -14,6 +14,7 @@ Snake::Snake(Game* game): Actor(game), mDirChanged(true){
     mCircle = new CircleComponent(this, 150);
     mCircle->setRadius(12.f);
 
+    getGame()->setSnake(this);
     addBody();
     addBody();
 }
@@ -72,4 +73,8 @@ void Snake::addBody(){
     mBodies.push_back(body);
 
     getGame()->getCamera()->addViewportVertices(-0.1, 0.1, -0.1, 0.1);
+}
+
+CircleComponent* Snake::getCircle(){
+    return mCircle;
 }

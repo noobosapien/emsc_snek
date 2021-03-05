@@ -22,6 +22,8 @@ public:
     void addBody();
     void snakeDirChanged(){mDirChanged = true;}
 
+    class CircleComponent* getCircle();
+
 private:
     class CircleComponent* mCircle;
     std::vector<class Body*> mBodies;

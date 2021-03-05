@@ -37,7 +37,7 @@ void WebsockClient::sendOutgoing(){
 void WebsockClient::processPacket(InputStream& inputStream){
     uint32_t packetType(0);
     inputStream.read(packetType);
-    printf("packetType: %u\n", packetType);
+    printf("WebsockClient::processpacket packetType: %u\n", packetType);
 
     switch(packetType){
         case kWelcomeCC:
@@ -50,7 +50,7 @@ void WebsockClient::processPacket(InputStream& inputStream){
             break;
     }
 
-    printf("Bytes remaining: %u\n", inputStream.getRemainingBitCount());
+    printf("WebsockClient::processpacket Bytes remaining: %u\n", inputStream.getRemainingBitCount());
 }
 
 bool WebsockClient::init(std::string address, std::string name){

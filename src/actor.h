@@ -54,9 +54,9 @@ private:
     float mScale;
     float mRotation;
     bool mRecomputeWorldTransform;
+    class Game* mGame;
 
     std::vector<class Component*> mComponents;
-    class Game* mGame;
 };
 
 #endif
