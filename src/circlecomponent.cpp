@@ -4,7 +4,9 @@ CircleComponent::CircleComponent(Actor* owner, int drawOrder): Component(owner),
     mOwner->getGame()->addCircle(this);
 }
 
-CircleComponent::~CircleComponent(){}
+CircleComponent::~CircleComponent(){
+    mOwner->getGame()->removeCircle(this);
+}
 
 const glm::vec2& CircleComponent::getCenter() const{
     return mOwner->getPosition();

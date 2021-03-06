@@ -4,7 +4,9 @@ BorderComponent::BorderComponent(Actor* owner, int drawOrder): Component(owner),
     mOwner->getGame()->addBorder(this);
 }
 
-BorderComponent::~BorderComponent(){}
+BorderComponent::~BorderComponent(){
+    mOwner->getGame()->removeBorder(this);
+}
 
 void BorderComponent::draw(Shader* shader){
     

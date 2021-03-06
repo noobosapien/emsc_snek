@@ -13,7 +13,7 @@ Food::Food(Game* game): Actor(game){
 }
 
 Food::~Food(){
-
+    
 }
 
 void Food::read(InputStream& inStream){
@@ -82,6 +82,7 @@ void Food::readAndSetScale(InputStream& inStream){
 
 void Food::updateActor(float delta){
     if(Intersect(mCircle, mSnake->getCircle())){
+        printf("Food::updateActor here\n");
         OutputStream* outStream = new OutputStream();
         outStream->write(true);
         WebsockClient::sendMessage(*outStream);
