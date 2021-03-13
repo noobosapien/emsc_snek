@@ -35,6 +35,8 @@ bool Game::initialize(){
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    mGameState = EStart;
+
     return true;
 }
 
@@ -397,4 +399,21 @@ void Game::setSnake(Snake* snake){
 
 Snake* Game::getSnake(){
     return mSnake;
+}
+
+
+std::vector<class UIScreen*>& Game::getUIStack(){
+    return mUIStack;
+}
+
+void Game::pushUI(class UIScreen* screen){
+    mUIStack.emplace_back(screen);
+}
+
+void Game::setState(GameState state){
+    mGameState = state;
+}
+
+Game::GameState Game::getState(){
+    return mGameState;
 }

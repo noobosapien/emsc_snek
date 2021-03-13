@@ -25,6 +25,7 @@
 #include "circlecomponent.h"
 #include "camera.h"
 #include "bordercomponent.h"
+#include "uiscreen.h"
 
 #include "network/websockclient.h"
 
@@ -37,6 +38,12 @@ public:
     void runLoop();
     bool shutDown();
     void setWinDim(int width, int height);
+
+    enum GameState{
+        EStart,
+        EGameplay,
+        EPause
+    };
 
     void addActor(Actor* actor);
     void removeActor(Actor* actor);
@@ -60,6 +67,12 @@ public:
     void setDebug(bool value) {mDebug = value;}
 
     class Camera* getCamera(){return mCamera;}
+
+    std::vector<class UIScreen*>& getUIStack();
+    void pushUI(class UIScreen* screen);
+
+    void setState(GameState state);
+    GameState getState();
 
     static int WIN_WIDTH;
     static int WIN_HEIGHT;
@@ -92,6 +105,7 @@ private:
     std::vector<Actor*> mPendingActors;
     bool mUpdatingActors;
 
+    GameState mGameState;
     class Snake* mSnake;
 
     Shader* mSpriteShader;
@@ -105,6 +119,8 @@ private:
     std::vector<CircleComponent*> mCircles;
 
     std::vector<class BorderComponent*> mBorders;
+
+    std::vector<class UIScreen*> mUIStack;
 
     class Camera* mCamera;
 

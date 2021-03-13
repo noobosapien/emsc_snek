@@ -17,7 +17,7 @@ WebsockClient* WebsockClient::sInstance = nullptr;
 
 bool WebsockClient::staticInit(Game* game, std::string name){
     WebsockClient::sInstance = new WebsockClient(game);
-    return WebsockClient::sInstance->init("ws://localhost:3001", name);
+    return WebsockClient::sInstance->init("ws://192.168.1.220:3001", name);
 }
 
 void WebsockClient::sendOutgoing(){
