@@ -35,7 +35,14 @@ bool Game::initialize(){
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    mGameState = EStart;
+    // if(TTF_Init() != 0){
+    //     printf("Failed to initialize SDL_ttf");
+    //     return false;
+    // }
+
+    // mGameState = EStart;
+
+    mGameState = EGameplay;
 
     return true;
 }
@@ -83,11 +90,41 @@ void Game::processInput(){
     SDL_Event event;
 
     if(SDL_PollEvent(&event)){
-        mUpdatingActors = true;
-        for(auto actor: mActors){
-            actor->processInput(event);
+        switch(event.type){
+            case SDL_QUIT:
+                mGameState = EStart;
+                break;
+            case SDL_KEYDOWN:
+                if(!event.key.repeat){
+                    if(mGameState == EGameplay){
+                        handleKeyPress(event.key.keysym.sym);
+                    }else if(!mUIStack.empty()){
+                        mUIStack.back()->handleKeyPress(event.key.keysym.sym);
+                    }
+                }
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                if(mGameState == EGameplay){
+                    handleKeyPress(event.button.button);
+                }else if(!mUIStack.empty()){
+                    mUIStack.back()->handleKeyPress(event.button.button);
+                }
+                break;
+            default:
+                break;
         }
-        mUpdatingActors = false;
+
+        if(mGameState == EGameplay){
+            mUpdatingActors = true;
+            for(auto actor: mActors){
+                if(actor->getState() == Actor::EActive){
+                    actor->processInput(event);
+                }
+            }
+            mUpdatingActors = false;
+        }else if(!mUIStack.empty()){
+            mUIStack.back()->processInput(event);
+        }
     }
 }
 
@@ -104,29 +141,47 @@ void Game::updateGame(){
     
     mTicksCount = SDL_GetTicks();
 
-    //Actor stuff
+    if(mGameState == EGameplay){
+        //Actor stuff
 
-    mUpdatingActors = true;
-    for(auto actor: mActors){
-        actor->update(mDeltaTime);
-    }
-    mUpdatingActors = false;
+        mUpdatingActors = true;
+        for(auto actor: mActors){
+            actor->update(mDeltaTime);
+        }
+        mUpdatingActors = false;
 
-    for(auto pending: mPendingActors){
-        pending->computeWorldTransform();
-        mActors.emplace_back(pending);
-    }
-    mPendingActors.clear();
+        for(auto pending: mPendingActors){
+            pending->computeWorldTransform();
+            mActors.emplace_back(pending);
+        }
+        mPendingActors.clear();
 
-    std::vector<Actor*> deadActors;
-    for(auto actor: mActors){
-        if(actor->getState() == Actor::EDead){
-            deadActors.emplace_back(actor);
+        std::vector<Actor*> deadActors;
+        for(auto actor: mActors){
+            if(actor->getState() == Actor::EDead){
+                deadActors.emplace_back(actor);
+            }
+        }
+
+        for(auto actor: deadActors){
+            delete actor;
         }
     }
 
-    for(auto actor: deadActors){
-        delete actor;
+    for( auto ui : mUIStack){
+        if(ui->getState() == UIScreen::EActive){
+            ui->update(mDeltaTime);
+        }
+    }
+
+    auto iter = mUIStack.begin();
+    while(iter != mUIStack.end()){
+        if((*iter)->getState() == UIScreen::EClosing){
+            delete *iter;
+            iter = mUIStack.erase(iter);
+        }else{
+            ++iter;
+        }
     }
 }
 
@@ -134,8 +189,9 @@ void Game::updateGame(){
     IMPORTANT FOR SPRITES
 */
 void Game::generateOutput(){
-    glClearColor(1, 0.3, 0.3, 1.0);
+    glClearColor(0.313, 0.176, 0.47, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
+    glEnable(GL_BLEND);
     
     //set shaders, vertex arrays and draw the sprites
 
@@ -145,6 +201,10 @@ void Game::generateOutput(){
 
     for(auto sprite: mSprites){
         sprite->draw(mSpriteShader);
+    }
+
+    for(auto ui: mUIStack){
+        ui->draw(mSpriteShader);
     }
 
     if(mDebug)
@@ -416,4 +476,60 @@ void Game::setState(GameState state){
 
 Game::GameState Game::getState(){
     return mGameState;
+}
+
+Font* Game::getFont(const std::string& fileName){
+    auto iter = mFonts.find(fileName);
+
+    if(iter != mFonts.end()){
+        return iter->second;
+    }else{
+        Font* font = new Font(this);
+
+        if(font->load(fileName)){
+            mFonts.emplace(fileName, font);
+        }else{
+            font->unLoad();
+            delete font;
+            font = nullptr;
+        }
+
+        return font;
+    }
+}
+
+void Game::loadText(const std::string& fileName){
+    mText.clear();
+    std::ifstream file(fileName);
+    if(!file.is_open()){
+        printf("Text file %s not found", fileName.c_str());
+        return;
+    }
+
+    std::stringstream fileStream;
+    fileStream << file.rdbuf();
+    std::string contents = fileStream.str();
+
+    //CONTINUE LATER!!!!!
+}
+
+const std::string& Game::getText(const std::string& key){
+    static std::string errorMsg("KEY NOT FOUND");
+
+    auto iter = mText.find(key);
+    if(iter != mText.end()){
+        return iter->second;
+    }else{
+        return errorMsg;
+    }
+}
+
+void Game::handleKeyPress(int key){
+    switch(key){
+        case SDLK_ESCAPE:
+            //pause
+            break;
+        default:
+            break;
+    }
 }

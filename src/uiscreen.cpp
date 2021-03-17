@@ -45,7 +45,7 @@ void UIScreen::draw(class Shader* shader){
     }
 }
 
-void UIScreen::processInput(const uint8_t* keys){
+void UIScreen::processInput(const SDL_Event& event){
     if(!mButtons.empty()){
         int x, y;
         SDL_GetMouseState(&x, &y);

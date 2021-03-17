@@ -40,7 +40,7 @@ class UIScreen{
 
         virtual void update(float delta);
         virtual void draw(class Shader* shader);
-        virtual void processInput(const uint8_t* keys);
+        virtual void processInput(const SDL_Event& evet);
         virtual void handleKeyPress(int key);
 
         enum UIState{

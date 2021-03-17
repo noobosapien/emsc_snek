@@ -24,6 +24,8 @@ public:
     int getWidth(){return mWidth;};
     int getHeight(){return mHeight;};
 
+    void createFromSurface(SDL_Surface* surface);
+
 private:
     unsigned int mTextureID;
     int mWidth;

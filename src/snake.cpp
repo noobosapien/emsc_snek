@@ -62,7 +62,7 @@ glm::vec2 Snake::getNewBodyPos(){
 
 void Snake::addBody(){
 
-    Body* body;
+    Body* body = nullptr;
 
     if(!mBodies.empty()){
         body = new Body(getGame(), this, mBodies.back());
@@ -70,7 +70,8 @@ void Snake::addBody(){
         body = new Body(getGame(), this, nullptr);
     }
 
-    mBodies.push_back(body);
+    if(body)
+        mBodies.push_back(body);
 
     getGame()->getCamera()->addViewportVertices(-0.1, 0.1, -0.1, 0.1);
 }

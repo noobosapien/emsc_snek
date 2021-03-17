@@ -5,6 +5,7 @@
 #include <math.h>
 #include <unordered_map>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h> //use freetype
 #include <SDL2/SDL_image.h>
 #include <SDL_opengl.h>
 
@@ -26,6 +27,7 @@
 #include "camera.h"
 #include "bordercomponent.h"
 #include "uiscreen.h"
+#include "font.h"
 
 #include "network/websockclient.h"
 
@@ -71,6 +73,10 @@ public:
     std::vector<class UIScreen*>& getUIStack();
     void pushUI(class UIScreen* screen);
 
+    class Font* getFont(const std::string& fileName);
+    void loadText(const std::string& fileName);
+    const std::string& getText(const std::string& key);
+
     void setState(GameState state);
     GameState getState();
 
@@ -81,6 +87,8 @@ private:
     void processInput();
     void updateGame();
     void generateOutput();
+
+    void handleKeyPress(int key);
 
     void loadData();
     void unloadData();
@@ -121,6 +129,10 @@ private:
     std::vector<class BorderComponent*> mBorders;
 
     std::vector<class UIScreen*> mUIStack;
+
+    std::unordered_map<std::string, class Font*> mFonts;
+
+    std::unordered_map<std::string, std::string> mText;
 
     class Camera* mCamera;
 
