@@ -12,15 +12,13 @@ Texture::~Texture(){
 
 }
 
-bool Texture::load(const std::string& filename, SDL_Renderer* renderer){
+bool Texture::load(const std::string& filename){
 
     int nrChannels = 0;
 
     unsigned char* data = stbi_load(filename.c_str(), &mWidth, &mHeight, &nrChannels, 0);
 
-    glEnable(GL_TEXTURE_2D);
     glGenTextures(1, &mTextureID);
-
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextureID);
     
@@ -56,7 +54,7 @@ void Texture::createFromSurface(SDL_Surface* surface){
 
     glGenTextures(1, &mTextureID);
     glBindTexture(GL_TEXTURE_2D, mTextureID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, surface->pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

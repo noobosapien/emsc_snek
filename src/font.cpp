@@ -19,7 +19,7 @@ bool Font::load(const std::string& fileName){
     for(auto& size : fontSizes){
         TTF_Font* font = TTF_OpenFont(fileName.c_str(), size);
         if(font == nullptr){
-            SDL_Log("Failed to load the font %s in size %d\n", fileName.c_str(), size);
+            printf("Failed to load the font %s in size %d\n", fileName.c_str(), size);
             return false;
         }
 
@@ -39,9 +39,9 @@ Texture* Font::renderText(const std::string& textKey, const glm::vec3& color, in
     Texture* texture = nullptr;
 
     SDL_Color sdlColor;
-    sdlColor.r = static_cast<Uint8>(color.x * 255);
-    sdlColor.g = static_cast<Uint8>(color.y * 255);
-    sdlColor.b = static_cast<Uint8>(color.z * 255);
+    sdlColor.r = static_cast<uint8_t>(color.x * 255);
+    sdlColor.g = static_cast<uint8_t>(color.y * 255);
+    sdlColor.b = static_cast<uint8_t>(color.z * 255);
     sdlColor.a = 255;
 
     auto iter = mFontData.find(pointSize);

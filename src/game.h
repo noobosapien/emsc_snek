@@ -5,7 +5,7 @@
 #include <math.h>
 #include <unordered_map>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h> //use freetype
+#include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 #include <SDL_opengl.h>
 
@@ -30,7 +30,6 @@
 #include "font.h"
 
 #include "network/websockclient.h"
-
 
 class Game
 {

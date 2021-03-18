@@ -7,9 +7,9 @@ mTitle(nullptr), mBackground(nullptr), mTitlePos(0.0f, 300.0f),
 mNextButtonPos(0.0f, 200.0f), mBGPos(0.0f, 250.0f), mState(EActive){
 
 mGame->pushUI(this);
-// mFont = mGame->getFont("fonts/normal.ttf");
-mButtonOn = mGame->getTexture("textures/buttonOn.png");
-mButtonOff = mGame->getTexture("textures/buttonOff.png");
+mFont = mGame->getFont("src/fonts/Carlito-Regular.ttf");
+mButtonOn = mGame->getTexture("src/textures/ButtonBlue.png");
+mButtonOff = mGame->getTexture("src/textures/ButtonYellow.png");
 
 }
 
@@ -31,11 +31,11 @@ void UIScreen::update(float delta){
 
 void UIScreen::draw(class Shader* shader){
     if(mBackground){
-        drawTexture(shader, mBackground, mBGPos);
+        // drawTexture(shader, mBackground, mBGPos);
     }
 
     if(mTitle){
-        drawTexture(shader, mTitle, mTitlePos);
+        // drawTexture(shader, mTitle, mTitlePos);
     }
 
     for(auto b: mButtons){
@@ -98,7 +98,7 @@ void UIScreen::setTitle(const std::string& text, const glm::vec3& color, int poi
         mTitle = nullptr;
     }
 
-    // mTitle = mFont->renderText(text, color, pointSize);
+    mTitle = mFont->renderText(text, color, pointSize);
 }
 
 void UIScreen::addButton(const std::string& name, std::function<void()> onClick){
@@ -112,10 +112,16 @@ void UIScreen::addButton(const std::string& name, std::function<void()> onClick)
 
 void UIScreen::drawTexture(class Shader* shader, class Texture* texture, const glm::vec2& offset, float scale){
 
-    glm::mat4 scaleMat(1.f);    //create a scale matrix
-    glm::mat4 transMatrix(1.f); //create a translate matrix from offset
-    glm::mat4 world = scaleMat * transMatrix;
-    shader->setMatrixUniform("uWorldTransform", world);
+    shader->setActive();
+
+    glm::mat4 world(1.f);
+
+    world = glm::translate(world, glm::vec3(mGame->getSnake()->getPosition().x , mGame->getSnake()->getPosition().y, 0.f));
+    world = glm::rotate(world, glm::radians(0.f), glm::vec3(0.f, 0.f, 1.f));
+    world = glm::scale(world, glm::vec3(.1f, .1f, .1f));
+
+    shader->setMatrixUniform("u_model", world);
+    shader->setMatrixUniform("u_viewproj", mGame->getCamera()->getViewProj());
 
     texture->setActive();
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
@@ -160,7 +166,7 @@ void Button::setName(const std::string& name){
         mNameTex = nullptr;
     }
 
-    // mNameTex = mFont->renderText(mName);
+    mNameTex = mFont->renderText(mName);
 }
 
 

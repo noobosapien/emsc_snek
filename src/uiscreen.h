@@ -1,7 +1,6 @@
 #ifndef UISCREEN_H
 #define UISCREEN_H
 
-
 #include "game.h"
 #include <functional>
 

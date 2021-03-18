@@ -16,7 +16,7 @@ public:
     Texture();
     ~Texture();
 
-    bool load(const std::string& filename, SDL_Renderer* renderer);
+    bool load(const std::string& filename);
     void unload();
 
     void setActive();

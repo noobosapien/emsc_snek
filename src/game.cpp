@@ -1,4 +1,5 @@
 #include "game.h"
+#include "pausemenu.h"
 
 
  Game:: Game(): mTicksCount(0), mDeltaTime(0.0f), mUpdatingActors(false), mDebug(false)
@@ -35,10 +36,10 @@ bool Game::initialize(){
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // if(TTF_Init() != 0){
-    //     printf("Failed to initialize SDL_ttf");
-    //     return false;
-    // }
+    if(TTF_Init() != 0){
+        printf("Failed to initialize SDL_ttf");
+        return false;
+    }
 
     // mGameState = EStart;
 
@@ -203,6 +204,7 @@ void Game::generateOutput(){
         sprite->draw(mSpriteShader);
     }
 
+    
     for(auto ui: mUIStack){
         ui->draw(mSpriteShader);
     }
@@ -406,7 +408,7 @@ Texture* Game::getTexture(const std::string& filename){
     else{
         tex = new Texture();
 
-        if(tex->load(filename, renderer))
+        if(tex->load(filename))
             mTextures.emplace(filename, tex);
         else{
             delete tex;
@@ -527,7 +529,7 @@ const std::string& Game::getText(const std::string& key){
 void Game::handleKeyPress(int key){
     switch(key){
         case SDLK_ESCAPE:
-            //pause
+            new PauseMenu(this);
             break;
         default:
             break;
