@@ -3,7 +3,7 @@
 PauseMenu::PauseMenu(Game* game): UIScreen(game){
     mGame->setState(Game::EPause);
     setRelativeMouseMode(false);
-    setTitle("Paused");
+    setTitle("Paused", glm::vec3(1.0, 1.0, 1.0));
 
     addButton("Resume", [this](){
         close();
@@ -20,7 +20,7 @@ PauseMenu::~PauseMenu(){
 void PauseMenu::handleKeyPress(int key){
     UIScreen::handleKeyPress(key);
 
-    if(key == SDLK_ESCAPE){
+    if(key == SDLK_p){
         close();
     }
 }

@@ -20,6 +20,18 @@ bool Game::initialize(){
     SDL_CreateWindowAndRenderer(Game::WIN_WIDTH, Game::WIN_HEIGHT, 0, &window, &renderer);
     // SDL_CreateWindowAndRenderer(1920, 1920, 0, &window, &renderer);
 
+
+    // if(TTF_Init() != 0){
+    //     printf("Failed to initialize SDL_ttf");
+    //     return false;
+    // }
+
+    //Loads freetype
+    if(FT_Init_FreeType(&mFtLib)){
+        printf("ERROR:FREETYPE Could not initialize the library\n");
+        return false;
+    }
+
     gl_context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, gl_context);
 
@@ -35,11 +47,6 @@ bool Game::initialize(){
     
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    if(TTF_Init() != 0){
-        printf("Failed to initialize SDL_ttf");
-        return false;
-    }
 
     // mGameState = EStart;
 
@@ -66,6 +73,11 @@ bool Game::shutDown(){
     while(!mActors.empty()){
         delete mActors.back();
     }
+
+    //delete ui
+
+    //unload Freetype
+    FT_Done_FreeType(mFtLib);
 }
 
 void Game::setWinDim(int width, int height){
@@ -97,7 +109,7 @@ void Game::processInput(){
                 break;
             case SDL_KEYDOWN:
                 if(!event.key.repeat){
-                    if(mGameState == EGameplay){
+                    if(mGameState == EGameplay){ //might need to change this when the HUD is included
                         handleKeyPress(event.key.keysym.sym);
                     }else if(!mUIStack.empty()){
                         mUIStack.back()->handleKeyPress(event.key.keysym.sym);
@@ -193,6 +205,8 @@ void Game::generateOutput(){
     glClearColor(0.313, 0.176, 0.47, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     
     //set shaders, vertex arrays and draw the sprites
 
@@ -206,7 +220,7 @@ void Game::generateOutput(){
 
     
     for(auto ui: mUIStack){
-        ui->draw(mSpriteShader);
+        ui->draw(mTextShader, mSpriteShader);
     }
 
     if(mDebug)
@@ -244,6 +258,8 @@ void Game::removeActor(Actor* actor){
 void Game::loadData(){
     mCamera = new Camera();
     Snake* snake = new Snake(this);
+    
+    loadText("file");
 
     //to add the border create an actor
     Actor* temp = new Actor(this);
@@ -284,7 +300,33 @@ bool Game::loadShaders(){
     if(!loadBorderShader())
         return false;
     
+    if(!loadTextShader())
+        return false;
+    
     return true;
+}
+
+bool Game::loadTextShader(){
+    mTextShader = new Shader();
+
+    if(!mTextShader->load("src/shaders/text.vert", "src/shaders/text.frag"))
+        return false;
+    
+    mTextShader->setActive();
+
+	unsigned int indices[] = {
+		0, 1, 2,
+        2, 3, 0
+	};
+    
+
+    mTextShader->setVertexData(nullptr, 4, indices, 6, 4, GL_DYNAMIC_DRAW);
+
+    mTextShader->setAttrib("a_vertex", 2, 4, 0);
+    mTextShader->setAttrib("a_texCoord", 2, 4, 2);
+
+    return true;
+
 }
 
 bool Game::loadCircleShader(){
@@ -415,7 +457,6 @@ Texture* Game::getTexture(const std::string& filename){
             tex = nullptr;
         }
     }
-
     return tex;
 }
 
@@ -488,10 +529,9 @@ Font* Game::getFont(const std::string& fileName){
     }else{
         Font* font = new Font(this);
 
-        if(font->load(fileName)){
+        if(font->loadCharacters(fileName, 1)){
             mFonts.emplace(fileName, font);
         }else{
-            font->unLoad();
             delete font;
             font = nullptr;
         }
@@ -501,18 +541,19 @@ Font* Game::getFont(const std::string& fileName){
 }
 
 void Game::loadText(const std::string& fileName){
-    mText.clear();
-    std::ifstream file(fileName);
-    if(!file.is_open()){
-        printf("Text file %s not found", fileName.c_str());
-        return;
-    }
+    // mText.clear();
+    // std::ifstream file(fileName);
+    // if(!file.is_open()){
+    //     printf("Text file %s not found", fileName.c_str());
+    //     return;
+    // }
 
-    std::stringstream fileStream;
-    fileStream << file.rdbuf();
-    std::string contents = fileStream.str();
+    // std::stringstream fileStream;
+    // fileStream << file.rdbuf();
+    // std::string contents = fileStream.str();
 
     //CONTINUE LATER!!!!!
+    mText.emplace("Paused", "Paused");
 }
 
 const std::string& Game::getText(const std::string& key){
@@ -528,10 +569,14 @@ const std::string& Game::getText(const std::string& key){
 
 void Game::handleKeyPress(int key){
     switch(key){
-        case SDLK_ESCAPE:
+        case SDLK_p:
             new PauseMenu(this);
             break;
         default:
             break;
     }
+}
+
+FT_Library& Game::getFtLib(){
+    return mFtLib;
 }

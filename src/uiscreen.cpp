@@ -5,23 +5,19 @@
 UIScreen::UIScreen(Game* game): mGame(game),
 mTitle(nullptr), mBackground(nullptr), mTitlePos(0.0f, 300.0f),
 mNextButtonPos(0.0f, 200.0f), mBGPos(0.0f, 250.0f), mState(EActive){
-
-mGame->pushUI(this);
-mFont = mGame->getFont("src/fonts/Carlito-Regular.ttf");
-mButtonOn = mGame->getTexture("src/textures/ButtonBlue.png");
-mButtonOff = mGame->getTexture("src/textures/ButtonYellow.png");
-
+    mGame->pushUI(this);
+    mFont = mGame->getFont("src/fonts/normal.ttf");
 }
 
 UIScreen::~UIScreen(){
     if(mTitle){
-        mTitle->unload();
         delete mTitle;
     }
 
     for(auto b: mButtons){
         delete b;
     }
+
     mButtons.clear();
 }
 
@@ -29,19 +25,24 @@ void UIScreen::update(float delta){
 
 }
 
-void UIScreen::draw(class Shader* shader){
+void UIScreen::draw(class Shader* textShader, class Shader* spriteShader){
     if(mBackground){
-        // drawTexture(shader, mBackground, mBGPos);
+        drawTexture(spriteShader, mBackground, mBGPos);
     }
 
     if(mTitle){
-        // drawTexture(shader, mTitle, mTitlePos);
+        mTitle->drawText(textShader, glm::vec2(0.5f, 0.5f));
     }
 
     for(auto b: mButtons){
-        Texture* tex = b->getHighlighted() ? mButtonOn : mButtonOff;
-        drawTexture(shader, tex, b->getPosition());
-        drawTexture(shader, b->getNameTex(), b->getPosition());
+        if(b->getHighlighted()){
+            // b->setBackground();
+        }else{
+            // b->setBackground();
+        }
+
+        b->drawBackground(spriteShader);
+        b->drawText(textShader);
     }
 }
 
@@ -93,20 +94,24 @@ UIScreen::UIState UIScreen::getState(){
 
 void UIScreen::setTitle(const std::string& text, const glm::vec3& color, int pointSize){
     if(mTitle){
-        mTitle->unload();
         delete mTitle;
         mTitle = nullptr;
     }
 
-    mTitle = mFont->renderText(text, color, pointSize);
+    mTitle = new Text(mGame, mFont, text, 1, glm::vec3(1.f, 1.f, 1.f));
 }
 
 void UIScreen::addButton(const std::string& name, std::function<void()> onClick){
-    glm::vec2 dims (static_cast<float>(mButtonOn->getWidth()), static_cast<float>(mButtonOn->getHeight()));
-    Button* b = new Button(name, mFont, onClick, mNextButtonPos, dims);
+
+    // glm::vec2 dims (static_cast<float>(mButtonOn->getWidth()), static_cast<float>(mButtonOn->getHeight()));
+    glm::vec2 dims(10.f);
+    Button* b = new Button(mGame, name, mFont, onClick, mNextButtonPos);
+
+    //call button setcolor and setPointSize
+
     mButtons.emplace_back(b);
 
-    mNextButtonPos.y -= mButtonOff->getHeight() + 20.0f;
+    // mNextButtonPos.y -= mButtonOff->getHeight() + 20.0f;
 }
 
 
@@ -124,11 +129,13 @@ void UIScreen::drawTexture(class Shader* shader, class Texture* texture, const g
     shader->setMatrixUniform("u_viewproj", mGame->getCamera()->getViewProj());
 
     texture->setActive();
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
 }
 
 void UIScreen::setRelativeMouseMode(bool relative){
+    relative = false;
     if(relative){
         SDL_SetRelativeMouseMode(SDL_TRUE);
         SDL_GetRelativeMouseState(nullptr, nullptr);
@@ -139,20 +146,20 @@ void UIScreen::setRelativeMouseMode(bool relative){
 
 //Button
 
-Button::Button(const std::string& name, class Font* font,std::function<void()> onClick, const glm::vec2& pos, const glm::vec2& dims): 
+Button::Button(Game* game, const std::string& name, class Font* font,std::function<void()> onClick, const glm::vec2& pos): 
+mGame(game),
 mOnClick(onClick), 
-mNameTex(nullptr),
+mNameText(nullptr),
 mFont(font), 
 mPosition(pos), 
-mDimensions(dims), 
-mHighlighted(false){
+mHighlighted(false),
+mBackground(nullptr){
     setName(name);
 }
 
 Button::~Button(){
-    if(mNameTex){
-        mNameTex->unload();
-        delete mNameTex;
+    if(mNameText){
+        delete mNameText;
     }
 }
 
@@ -160,18 +167,16 @@ Button::~Button(){
 void Button::setName(const std::string& name){
     mName = name;
 
-    if(mNameTex){
-        mNameTex->unload();
-        delete mNameTex;
-        mNameTex = nullptr;
+    if(mNameText){
+        delete mNameText;
+        mNameText = nullptr;
     }
 
-    mNameTex = mFont->renderText(mName);
+    mNameText = new Text(mGame, mFont, name, 1, glm::vec3(1.f, 1.f, 1.f));
 }
 
-
-class Texture* Button::getNameTex(){
-    return mNameTex;
+void Button::setBackground(class Texture* tex){
+    mBackground = tex;
 }
 
 const glm::vec2& Button::getPosition() const{
@@ -200,3 +205,14 @@ void Button::onClick(){
         mOnClick();
     }
 }
+
+
+void Button::drawBackground(class Shader* shader){
+    //todo
+}
+
+
+void Button::drawText(class Shader* shader){
+    //todo
+}
+

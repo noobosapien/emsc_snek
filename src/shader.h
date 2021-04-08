@@ -30,11 +30,13 @@ public:
     void setMatrixUniform(const char* name, const glm::mat4& matrix);
     void setFloatUniform(const char* name, const float fl);
     void setVec2Uniform(const char* name, const glm::vec2& vec);
+    void setVec3Uniform(const char* name, const glm::vec3& vec);
 
     void setVertexData(float* verts, unsigned int numVerts, 
-    const unsigned int* indices, unsigned int numIndices, unsigned int cols);
+    const unsigned int* indices, unsigned int numIndices, unsigned int cols, GLenum usage = GL_STATIC_DRAW);
     void setAttrib(const char* name, unsigned int size, unsigned int stride,
     unsigned int offset);
+    void setBufferSubData(float* verts, unsigned int numVerts, unsigned int cols);
 
 private:
     bool compileShader(std::string filename, GLenum shaderType, GLuint& outShader);

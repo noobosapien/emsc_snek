@@ -5,62 +5,59 @@ Font::Font(Game* game): mGame(game){
 }
 
 Font::~Font(){
-
+    unLoad();
 }
 
-bool Font::load(const std::string& fileName){
-    std::vector<int> fontSizes = {
-        8, 9, 10, 11, 12, 14, 16, 18,
-        20, 22, 24, 26, 28, 30, 32, 34,
-        36, 38, 40, 42, 44, 46, 48, 52, 
-        56, 60, 64, 68, 72
-    };
+bool Font::loadCharacters(const std::string& pathName, int pointSize){
+    FT_Face face;
+    if(FT_New_Face(mGame->getFtLib(), pathName.c_str(), 0, &face)){
+        printf("ERROR::FREETYPE could not load the font\n");
+        return false;
+    }
 
-    for(auto& size : fontSizes){
-        TTF_Font* font = TTF_OpenFont(fileName.c_str(), size);
-        if(font == nullptr){
-            printf("Failed to load the font %s in size %d\n", fileName.c_str(), size);
+    FT_Set_Pixel_Sizes(face, 0, pointSize);
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    for(unsigned char c = 0; c < 128; c++){
+        if(FT_Load_Char(face, c, FT_LOAD_RENDER)){
+                printf("ERROR::FREETYPE failed to load the glyph\n");
+                return false;
+        }
+
+        Texture* tex = new Texture();
+
+        if(!tex->loadFromGlyph(face)){
+            printf("Failed to load texture from glyph\n");
             return false;
         }
 
-        mFontData.emplace(size, font);
+        Character* ch = new Character{
+            tex,
+            glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+            glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+            static_cast<unsigned int>(face->glyph->advance.x)
+        };
+
+        mCharacters.emplace(c, ch);
+
     }
 
+    FT_Done_Face(face);
     return true;
 }
 
 void Font::unLoad(){
-    for(auto& font: mFontData){
-        TTF_CloseFont(font.second);
+    for(auto ch: mCharacters){
+        delete ch.second;
     }
+    mCharacters.clear();
 }
 
-Texture* Font::renderText(const std::string& textKey, const glm::vec3& color, int pointSize){
-    Texture* texture = nullptr;
-
-    SDL_Color sdlColor;
-    sdlColor.r = static_cast<uint8_t>(color.x * 255);
-    sdlColor.g = static_cast<uint8_t>(color.y * 255);
-    sdlColor.b = static_cast<uint8_t>(color.z * 255);
-    sdlColor.a = 255;
-
-    auto iter = mFontData.find(pointSize);
-
-    if(iter != mFontData.end()){
-        TTF_Font* font = iter->second;
-        const std::string& actualText = mGame->getText(textKey);
-
-        SDL_Surface* surf = TTF_RenderUTF8_Blended(font, actualText.c_str(), sdlColor);
-
-        if(surf != nullptr){
-            texture = new Texture();
-            texture->createFromSurface(surf);
-            SDL_FreeSurface(surf);
-        }
-    }else{
-        printf("Point size %d is unsupported", pointSize);
-    }
-
-    return texture;
-
+Character* Font::renderCharacter(char c){
+    auto ch = mCharacters.find(c);
+    if(ch != mCharacters.end())
+        return ch->second;
+    return nullptr;
 }
+

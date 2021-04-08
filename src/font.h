@@ -3,19 +3,27 @@
 
 #include "game.h"
 
+struct Character{
+    class Texture* texture;
+    glm::ivec2 size;
+    glm::ivec2 bearing;
+    unsigned int advance;
+};
+
 class Font{
     public:
         Font(class Game* game);
         ~Font();
 
-        bool load(const std::string& fileName);
+        bool loadCharacters(const std::string& pathName, int pointSize);
         void unLoad();
-
-        class Texture* renderText(const std::string& textKey, const glm::vec3& color = glm::vec3(1.0f, 1.0f, 1.0f), int pointSize = 30);
-
+        
+        Character* renderCharacter(char c);
+    
     private:
-        std::unordered_map<int, TTF_Font*> mFontData;
         class Game* mGame;
+        std::unordered_map<char, Character*> mCharacters;
 };
+
 
 #endif

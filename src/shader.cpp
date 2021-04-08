@@ -1,6 +1,6 @@
 #include "shader.h"
 
-Shader::Shader(): mVertexShader(0), mFragShader(0), mShaderProgram(0)
+Shader::Shader(): mVertexShader(0), mFragShader(0), mShaderProgram(0), VAO(0), VBO(0)
 {
 }
 
@@ -37,6 +37,12 @@ unsigned int Shader::setActive(){
     return mShaderProgram;
 }
 
+void Shader::setBufferSubData(float* verts, unsigned int numVerts, unsigned int cols){
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * numVerts * cols, verts);
+}
+
 void Shader::setAttrib(const char* name, unsigned int size, unsigned int stride,
     unsigned int offset){
 
@@ -55,6 +61,12 @@ void Shader::setMatrixUniform(const char* name, const glm::mat4& matrix){
     setActive();
     GLuint loc = glGetUniformLocation(mShaderProgram, name);
     glUniformMatrix4fv(loc, 1, GL_FALSE, &matrix[0][0]);
+}
+
+void Shader::setVec3Uniform(const char* name, const glm::vec3& vec){
+    setActive();
+    GLuint loc = glGetUniformLocation(mShaderProgram, name);
+    glUniform3f(loc, vec.x, vec.y, vec.z);
 }
 
 void Shader::setFloatUniform(const char* name, const float fl){
@@ -134,20 +146,20 @@ bool Shader::isValidProgram(){
 }
 
 void Shader::setVertexData(float* verts, unsigned int numVerts, 
-    const unsigned int* indices, unsigned int numIndices, unsigned int cols){
+    const unsigned int* indices, unsigned int numIndices, unsigned int cols, GLenum usage){
 
     setActive();
-    
+
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numVerts * cols, verts, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numVerts * cols, verts, usage);
     
     
     glGenBuffers(1, &IBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * numIndices, indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * numIndices, indices, usage);
     
 }

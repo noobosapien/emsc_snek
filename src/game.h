@@ -5,9 +5,12 @@
 #include <math.h>
 #include <unordered_map>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
+// #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 #include <SDL_opengl.h>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -79,6 +82,8 @@ public:
     void setState(GameState state);
     GameState getState();
 
+    FT_Library& getFtLib();
+
     static int WIN_WIDTH;
     static int WIN_HEIGHT;
 
@@ -98,12 +103,15 @@ private:
     bool loadSpriteShader();
     bool loadCircleShader();
     bool loadBorderShader();
+    bool loadTextShader();
 
     bool mDebug;
 
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_GLContext gl_context;
+
+    FT_Library mFtLib;
 
     Uint32 mTicksCount;
     float mDeltaTime;
@@ -118,6 +126,7 @@ private:
     Shader* mSpriteShader;
     Shader* mCircleShader;
     Shader* mBorderShader;
+    Shader* mTextShader;
 
     std::vector<SpriteComponent*> mSprites;
 

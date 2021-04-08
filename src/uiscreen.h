@@ -2,19 +2,22 @@
 #define UISCREEN_H
 
 #include "game.h"
+#include "text.h"
 #include <functional>
 
 class Button{
     public:
-        Button(const std::string& name, class Font* font,
-        std::function<void()> onClick, const glm::vec2& pos, 
-        const glm::vec2& dims);
+        Button(Game* game, const std::string& name, class Font* font,
+        std::function<void()> onClick, const glm::vec2& pos);
 
         ~Button();
 
         void setName(const std::string& name);
 
-        class Texture* getNameTex();
+        void setBackground(class Texture* tex);
+        void drawBackground(class Shader* shader);
+        void drawText(class Shader* shader);
+        
         const glm::vec2& getPosition() const;
         void setHighlighted(bool sel);
         bool getHighlighted();
@@ -22,10 +25,12 @@ class Button{
         void onClick();
 
     private:
+        class Game* mGame;
         std::function<void()> mOnClick;
         std::string mName;
-        class Texture* mNameTex;
+        class Text* mNameText;
         class Font* mFont;
+        class Texture* mBackground;
         glm::vec2 mPosition;
         glm::vec2 mDimensions;
         bool mHighlighted;
@@ -38,7 +43,7 @@ class UIScreen{
         virtual ~UIScreen();
 
         virtual void update(float delta);
-        virtual void draw(class Shader* shader);
+        virtual void draw(class Shader* textShader, class Shader* spriteShader);
         virtual void processInput(const SDL_Event& evet);
         virtual void handleKeyPress(int key);
 
@@ -53,23 +58,20 @@ class UIScreen{
         void addButton(const std::string& name, std::function<void()> onClick);
     
     protected:
+        class Text* mTitle;
         void drawTexture(class Shader* shader, class Texture* texture, const glm::vec2& offset = glm::vec2(0.0f), float scale = 1.0f);
         void setRelativeMouseMode(bool relative);
 
         class Game* mGame;
         class Font* mFont;
 
-        class Texture* mTitle;
         class Texture* mBackground;
-        class Texture* mButtonOn;
-        class Texture* mButtonOff;
 
         glm::vec2 mTitlePos;
         glm::vec2 mNextButtonPos;
         glm::vec2 mBGPos;
         UIState mState;
         std::vector<class Button*> mButtons;
-
 };
 
 #endif

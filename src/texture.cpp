@@ -60,6 +60,29 @@ void Texture::createFromSurface(SDL_Surface* surface){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
+bool Texture::loadFromGlyph(FT_Face& face){
+    glGenTextures(1, &mTextureID);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, mTextureID);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    //Rendering problem right here
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 
+    face->glyph->bitmap.width,
+    face->glyph->bitmap.rows,
+    0,
+    GL_RGBA,
+    GL_UNSIGNED_BYTE,
+    face->glyph->bitmap.buffer);
+
+    return true;
+}
+
 void flipTexMid32(SDL_Surface* surface){
 
     if(surface){
