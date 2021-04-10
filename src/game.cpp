@@ -81,7 +81,7 @@ bool Game::shutDown(){
 }
 
 void Game::setWinDim(int width, int height){
-
+    printf("w(%d) h(%d)\n", width, height);
     if(height > width){
         Game::WIN_HEIGHT = height;
         Game::WIN_WIDTH = width;

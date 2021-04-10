@@ -39,6 +39,7 @@ bool Font::loadCharacters(const std::string& pathName, int pointSize){
             static_cast<unsigned int>(face->glyph->advance.x)
         };
 
+        printf("%c - size(%d, %d) bearing(%d, %d) advance(%d)\n", c, ch->size.x, ch->size.y, ch->bearing.x, ch->bearing.y, ch->advance >> 6);
         mCharacters.emplace(c, ch);
 
     }

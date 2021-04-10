@@ -3,7 +3,7 @@
 PauseMenu::PauseMenu(Game* game): UIScreen(game){
     mGame->setState(Game::EPause);
     setRelativeMouseMode(false);
-    setTitle("P", glm::vec3(1.0, 1.0, 0.0));
+    setTitle("Paused", glm::vec2(-0.05, 0.0), glm::vec3(1.0, 1.0, 0.0));
 
     addButton("Resume", [this](){
         close();

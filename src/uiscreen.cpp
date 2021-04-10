@@ -31,7 +31,7 @@ void UIScreen::draw(class Shader* textShader, class Shader* spriteShader){
     }
 
     if(mTitle){
-        mTitle->drawText(textShader, glm::vec2(0.f, 0.f));
+        mTitle->drawText(textShader);
     }
 
     for(auto b: mButtons){
@@ -92,13 +92,13 @@ UIScreen::UIState UIScreen::getState(){
     return mState;
 }
 
-void UIScreen::setTitle(const std::string& text, const glm::vec3& color, int pointSize){
+void UIScreen::setTitle(const std::string& text, const glm::vec2& position, const glm::vec3& color, int pointSize){
     if(mTitle){
         delete mTitle;
         mTitle = nullptr;
     }
 
-    mTitle = new Text(mGame, mFont, text, 1, color);
+    mTitle = new Text(mGame, position, mFont, text, pointSize, color);
 }
 
 void UIScreen::addButton(const std::string& name, std::function<void()> onClick){
@@ -172,7 +172,7 @@ void Button::setName(const std::string& name){
         mNameText = nullptr;
     }
 
-    mNameText = new Text(mGame, mFont, name, 1, glm::vec3(1.f, 1.f, 1.f));
+    mNameText = new Text(mGame, glm::vec3(0.0), mFont, name, 1, glm::vec3(1.f, 1.f, 1.f));
 }
 
 void Button::setBackground(class Texture* tex){
