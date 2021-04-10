@@ -8,6 +8,7 @@
 
 int Game::WIN_WIDTH = 800;
 int Game::WIN_HEIGHT = 800;
+glm::vec2 Game::WIN_RES = glm::vec2(1.0);
 
 bool Game::initialize(){
     SDL_Init(SDL_INIT_VIDEO);
@@ -85,12 +86,14 @@ void Game::setWinDim(int width, int height){
     if(height > width){
         Game::WIN_HEIGHT = height;
         Game::WIN_WIDTH = width;
+        Game::WIN_RES = glm::vec2(1.0, (float)height/width);
 
         SDL_SetWindowSize(window, width, height);
         glViewport(-height/2 + width/2, 0, height, height);
     }else{
         Game::WIN_HEIGHT = height;
         Game::WIN_WIDTH = width;
+        Game::WIN_RES = glm::vec2((float)width/height, 1.0);
 
         SDL_SetWindowSize(window, width, height);
         glViewport(0, -width/2 + height/2, width, width);

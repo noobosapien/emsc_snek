@@ -92,13 +92,13 @@ UIScreen::UIState UIScreen::getState(){
     return mState;
 }
 
-void UIScreen::setTitle(const std::string& text, const glm::vec2& position, const glm::vec3& color, int pointSize){
+void UIScreen::setTitle(const std::string& text, const glm::vec2& position, const glm::vec3& color, const glm::vec2& pointScale){
     if(mTitle){
         delete mTitle;
         mTitle = nullptr;
     }
 
-    mTitle = new Text(mGame, position, mFont, text, pointSize, color);
+    mTitle = new Text(mGame, position, mFont, text, pointScale, color);
 }
 
 void UIScreen::addButton(const std::string& name, std::function<void()> onClick){
@@ -172,7 +172,7 @@ void Button::setName(const std::string& name){
         mNameText = nullptr;
     }
 
-    mNameText = new Text(mGame, glm::vec3(0.0), mFont, name, 1, glm::vec3(1.f, 1.f, 1.f));
+    mNameText = new Text(mGame, glm::vec3(0.0), mFont, name, glm::vec2(1.0, 1.0), glm::vec3(1.f, 1.f, 1.f));
 }
 
 void Button::setBackground(class Texture* tex){

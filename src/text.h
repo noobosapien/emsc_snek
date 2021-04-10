@@ -6,19 +6,19 @@
 
 class Text{
     public:
-        Text(class Game* game, glm::vec2 position, class Font* font, const std::string& string, int pointSize, glm::vec3 color);
+        Text(class Game* game, glm::vec2 position, class Font* font, const std::string& string, glm::vec2 pointScale, glm::vec3 color);
         ~Text();
 
         void drawText(class Shader* shader);
         void setColor(const glm::vec3& color);
-        void setPointSize(int pointSize);
+        void setPointScale(const glm::vec2& pointScale);
 
     private:
         std::string mString;
         class Font* mFont;
         class Game* mGame;
         glm::vec2 mPosition;
-        int mPointSize;
+        glm::vec2 mPointScale;
         glm::vec3 mColor;
         std::vector<struct Character*> mCharacters;
 };

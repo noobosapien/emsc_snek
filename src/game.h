@@ -86,6 +86,7 @@ public:
 
     static int WIN_WIDTH;
     static int WIN_HEIGHT;
+    static glm::vec2 WIN_RES;
 
 private:
     void processInput();

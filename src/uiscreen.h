@@ -54,7 +54,7 @@ class UIScreen{
 
         void close();
         UIState getState();
-        void setTitle(const std::string& text, const glm::vec2& position, const glm::vec3& color = glm::vec3(0.0f), int pointSize = 1);
+        void setTitle(const std::string& text, const glm::vec2& position, const glm::vec3& color = glm::vec3(0.0f), const glm::vec2& pointScale = glm::vec2(1.0));
         void addButton(const std::string& name, std::function<void()> onClick);
     
     protected:

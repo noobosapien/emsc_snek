@@ -1,7 +1,7 @@
 #include "text.h"
 
-Text::Text(class Game* game, glm::vec2 position, class Font* font, const std::string& string, int pointSize, glm::vec3 color):
-mGame(game), mPosition(position), mFont(font), mString(string), mPointSize(pointSize), mColor(color){
+Text::Text(class Game* game, glm::vec2 position, class Font* font, const std::string& string, glm::vec2 pointScale, glm::vec3 color):
+mGame(game), mPosition(position), mFont(font), mString(string), mPointScale(pointScale), mColor(color){
 
     for(auto c = mString.begin(); c != mString.end(); c++){
         Character* ch = mFont->renderCharacter(*c);
@@ -28,17 +28,12 @@ void Text::drawText(class Shader* shader){
     float y = mPosition.y;
 
     for(auto ch: mCharacters){
-        // float xPos = (x + ch->bearing.x * mPointSize);
-        // float yPos = (y - (ch->size.y - ch->bearing.y) * mPointSize);
 
-        // float w = (float)ch->size.x * mPointSize;
-        // float h = (float)ch->size.y * mPointSize;
+        float xPos = (x + (ch->bearing.x * mPointScale.x) / Game::WIN_WIDTH) * Game::WIN_RES.x;
+        float yPos = (y - ((ch->size.y - ch->bearing.y) * mPointScale.y) / Game::WIN_HEIGHT) * Game::WIN_RES.y;
 
-        float xPos = (x + (ch->bearing.x * mPointSize) / Game::WIN_WIDTH);
-        float yPos = (y - ((ch->size.y - ch->bearing.y) * mPointSize) / Game::WIN_HEIGHT);
-
-        float w = (float)ch->size.x * mPointSize / Game::WIN_WIDTH;
-        float h = (float)ch->size.y * mPointSize / Game::WIN_HEIGHT;
+        float w = ((float)ch->size.x * mPointScale.x / Game::WIN_WIDTH) * Game::WIN_RES.x;
+        float h = ((float)ch->size.y * mPointScale.y / Game::WIN_HEIGHT) * Game::WIN_RES.y;
 
 
         float verts[] = {
@@ -47,20 +42,12 @@ void Text::drawText(class Shader* shader){
             xPos + w, yPos, 1.f, 1.f,
             xPos + w, yPos + h, 1.f, 0.f,
         };
-        
-        // float verts[] = {
-        //     -.02f,  .01f, 0.f, 0.f,
-        //     .0f,  .01f, 1.f, 0.f,
-        //     .0f, -.01f, 1.f, 1.f,
-        //     -.02f, -.01f, 0.f, 1.f
-        // };
-        
 
         ch->texture->setActive();
 
         shader->setBufferSubData(verts, 4, 4);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-        x += (float)(ch->advance >> 6) * mPointSize / Game::WIN_WIDTH;
+        x += ((float)(ch->advance >> 6) * mPointScale.x / Game::WIN_WIDTH) * Game::WIN_RES.x;
     }
 }
 
@@ -70,7 +57,7 @@ void Text::setColor(const glm::vec3& color){
 }
 
 
-void Text::setPointSize(int pointSize){
-    mPointSize = pointSize;
+void Text::setPointScale(const glm::vec2& pointScale){
+    mPointScale = pointScale;
 }
 
