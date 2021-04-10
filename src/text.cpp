@@ -19,29 +19,37 @@ Text::~Text(){
 
 
 void Text::drawText(class Shader* shader, const glm::vec2& position){
-    glm::mat4 projection = glm::ortho(0.f, 800.f, 0.f, 600.f);
 
     unsigned int s = shader->setActive();
     shader->setVec3Uniform("u_textColor", mColor);
-    shader->setMatrixUniform("u_projection", mGame->getCamera()->getViewProj());
+    shader->setMatrixUniform("u_projection", mGame->getCamera()->getUIProjection());
 
     float x = position.x;
     float y = position.y;
 
     for(auto ch: mCharacters){
-        float xPos = x + ch->bearing.x * mPointSize;
-        float yPos = y - (ch->size.y - ch->bearing.y) * mPointSize;
+        float xPos = (x + ch->bearing.x * mPointSize);
+        float yPos = (y - (ch->size.y - ch->bearing.y) * mPointSize);
 
-        float w = ch->size.x * mPointSize;
-        float h = ch->size.y * mPointSize;
+        float w = (float)ch->size.x * mPointSize;
+        float h = (float)ch->size.y * mPointSize;
 
+
+        // float verts[] = {
+        //     xPos, yPos + h, 0.f, 0.f,
+        //     xPos, yPos, 0.f, 1.f,
+        //     xPos + w, yPos, 1.f, 1.f,
+        //     xPos + w, yPos + h, 1.f, 0.f,
+        // };
+        
         float verts[] = {
-            xPos, yPos + h, 0.f, 0.f,
-            xPos, yPos, 0.f, 1.f,
-            xPos + w, yPos, 1.f, 1.f,
-            xPos + w, yPos + h, 1.f, 0.f,
+            -.02f,  .01f, 0.f, 0.f,
+            .0f,  .01f, 1.f, 0.f,
+            .0f, -.01f, 1.f, 1.f,
+            -.02f, -.01f, 0.f, 1.f
         };
         
+
         ch->texture->setActive();
 
         shader->setBufferSubData(verts, 4, 4);

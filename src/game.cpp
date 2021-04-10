@@ -315,8 +315,8 @@ bool Game::loadTextShader(){
     mTextShader->setActive();
 
 	unsigned int indices[] = {
-		0, 1, 2,
-        2, 3, 0
+		2, 3, 0,
+        0, 1, 2  
 	};
     
 
@@ -529,7 +529,7 @@ Font* Game::getFont(const std::string& fileName){
     }else{
         Font* font = new Font(this);
 
-        if(font->loadCharacters(fileName, 1)){
+        if(font->loadCharacters(fileName, 48)){
             mFonts.emplace(fileName, font);
         }else{
             delete font;

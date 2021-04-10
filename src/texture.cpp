@@ -61,6 +61,8 @@ void Texture::createFromSurface(SDL_Surface* surface){
 }
 
 bool Texture::loadFromGlyph(FT_Face& face){
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
     glGenTextures(1, &mTextureID);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextureID);
@@ -71,14 +73,16 @@ bool Texture::loadFromGlyph(FT_Face& face){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    //Rendering problem right here
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 
+    //Rendering problem right here note: Needed: GL_LUMINANCE
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, 
     face->glyph->bitmap.width,
     face->glyph->bitmap.rows,
     0,
-    GL_RGBA,
+    GL_LUMINANCE,
     GL_UNSIGNED_BYTE,
     face->glyph->bitmap.buffer);
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
     return true;
 }

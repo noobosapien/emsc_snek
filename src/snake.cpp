@@ -38,6 +38,7 @@ void Snake::updateActor(float delta){
     }
 
     getGame()->getCamera()->setPosition(glm::vec3(getPosition().x, getPosition().y, 0.f));
+    // printf("snake pos: %f %f \n", getPosition().x, getPosition().y);
 }
 
 

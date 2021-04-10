@@ -14,6 +14,10 @@ public:
     glm::mat4& getView(){return mView;}
     glm::mat4& getProjection(){return mProjection;}
 
+    glm::mat4& getUIProjection(){return mUIProjection;}
+    glm::mat4& getUIViewProj(){return mUIViewProj;}
+
+
     void setPosition(glm::vec3 pos){mPosition = pos; recomputeViewProj();}
     void setRotation(float rot){mRotation = rot; recomputeViewProj();}
 
@@ -25,6 +29,10 @@ private:
     glm::mat4 mViewProj;
     glm::mat4 mView;
     glm::mat4 mProjection;
+
+    glm::mat4 mUIProjection;
+    glm::mat4 mUIViewProj;
+
 
     glm::vec3 mPosition;
     float mRotation;

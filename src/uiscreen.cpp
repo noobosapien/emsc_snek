@@ -6,7 +6,7 @@ UIScreen::UIScreen(Game* game): mGame(game),
 mTitle(nullptr), mBackground(nullptr), mTitlePos(0.0f, 300.0f),
 mNextButtonPos(0.0f, 200.0f), mBGPos(0.0f, 250.0f), mState(EActive){
     mGame->pushUI(this);
-    mFont = mGame->getFont("src/fonts/normal.ttf");
+    mFont = mGame->getFont("src/fonts/Roboto-Black.ttf");
 }
 
 UIScreen::~UIScreen(){
@@ -31,14 +31,14 @@ void UIScreen::draw(class Shader* textShader, class Shader* spriteShader){
     }
 
     if(mTitle){
-        mTitle->drawText(textShader, glm::vec2(0.5f, 0.5f));
+        mTitle->drawText(textShader, glm::vec2(0.f, 0.f));
     }
 
     for(auto b: mButtons){
         if(b->getHighlighted()){
-            // b->setBackground();
+            b->setBackground(nullptr);
         }else{
-            // b->setBackground();
+            b->setBackground(nullptr);
         }
 
         b->drawBackground(spriteShader);
@@ -98,7 +98,7 @@ void UIScreen::setTitle(const std::string& text, const glm::vec3& color, int poi
         mTitle = nullptr;
     }
 
-    mTitle = new Text(mGame, mFont, text, 1, glm::vec3(1.f, 1.f, 1.f));
+    mTitle = new Text(mGame, mFont, text, 1, color);
 }
 
 void UIScreen::addButton(const std::string& name, std::function<void()> onClick){
