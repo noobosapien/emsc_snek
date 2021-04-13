@@ -8,7 +8,7 @@
 class Button{
     public:
         Button(Game* game, const std::string& name, class Font* font,
-        std::function<void()> onClick, const glm::vec2& pos);
+        std::function<void()> onClick, const glm::vec2& pos, const glm::vec2& dims);
 
         ~Button();
 
@@ -34,7 +34,6 @@ class Button{
         glm::vec2 mPosition;
         glm::vec2 mDimensions;
         bool mHighlighted;
-
 };
 
 class UIScreen{
@@ -66,6 +65,8 @@ class UIScreen{
         class Font* mFont;
 
         class Texture* mBackground;
+        class Texture* mSelected;
+        class Texture* mUnSelected;
 
         glm::vec2 mTitlePos;
         glm::vec2 mNextButtonPos;

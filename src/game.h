@@ -105,6 +105,7 @@ private:
     bool loadCircleShader();
     bool loadBorderShader();
     bool loadTextShader();
+    bool loadUIShader();
 
     bool mDebug;
 
@@ -128,6 +129,7 @@ private:
     Shader* mCircleShader;
     Shader* mBorderShader;
     Shader* mTextShader;
+    Shader* mUIShader;
 
     std::vector<SpriteComponent*> mSprites;
 

@@ -223,7 +223,7 @@ void Game::generateOutput(){
 
     
     for(auto ui: mUIStack){
-        ui->draw(mTextShader, mSpriteShader);
+        ui->draw(mTextShader, mUIShader);
     }
 
     if(mDebug)
@@ -305,6 +305,39 @@ bool Game::loadShaders(){
     
     if(!loadTextShader())
         return false;
+    
+    if(!loadUIShader())
+        return false;
+    
+    return true;
+}
+
+bool Game::loadUIShader(){
+    mUIShader = new Shader();
+
+    if(!mUIShader->load("src/shaders/uitexture.vert", "src/shaders/uitexture.frag")){
+        return false;
+    }
+
+    mUIShader->setActive();
+
+    float vertices[] = {
+        -1.f,  1.f, 0.f, 1.f,
+		 1.f,  1.f, 1.f, 1.f,
+		 1.f, -1.f, 1.f, 0.f,
+		-1.f, -1.f, 0.f, 0.f
+    };
+
+	unsigned int indices[] = {
+		0, 1, 2,
+        2, 3, 0
+	};
+    
+
+    mUIShader->setVertexData(vertices, 4, indices, 6, 4);
+
+    mUIShader->setAttrib("a_vertex", 2, 4, 0);
+    mUIShader->setAttrib("a_texCoord", 2, 4, 2);
     
     return true;
 }

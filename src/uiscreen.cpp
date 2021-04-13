@@ -3,10 +3,13 @@
 //UISCREEN
 
 UIScreen::UIScreen(Game* game): mGame(game),
-mTitle(nullptr), mBackground(nullptr), mTitlePos(0.0f, 300.0f),
-mNextButtonPos(0.0f, 200.0f), mBGPos(0.0f, 250.0f), mState(EActive){
+mTitle(nullptr), mBackground(nullptr), mTitlePos(0.0f, 300.0f), 
+mSelected(nullptr), mUnSelected(nullptr),
+mNextButtonPos(0.0f, 0.0f), mBGPos(0.0f, 250.0f), mState(EActive){
     mGame->pushUI(this);
-    mFont = mGame->getFont("src/fonts/Roboto-Black.ttf");
+    mFont = mGame->getFont("src/fonts/normal.ttf");
+    mSelected = mGame->getTexture("src/textures/ButtonYellow.png");
+    mUnSelected = mGame->getTexture("src/textures/ButtonBlue.png");
 }
 
 UIScreen::~UIScreen(){
@@ -36,9 +39,9 @@ void UIScreen::draw(class Shader* textShader, class Shader* spriteShader){
 
     for(auto b: mButtons){
         if(b->getHighlighted()){
-            b->setBackground(nullptr);
+            b->setBackground(mSelected);
         }else{
-            b->setBackground(nullptr);
+            b->setBackground(mUnSelected);
         }
 
         b->drawBackground(spriteShader);
@@ -105,32 +108,19 @@ void UIScreen::addButton(const std::string& name, std::function<void()> onClick)
 
     // glm::vec2 dims (static_cast<float>(mButtonOn->getWidth()), static_cast<float>(mButtonOn->getHeight()));
     glm::vec2 dims(10.f);
-    Button* b = new Button(mGame, name, mFont, onClick, mNextButtonPos);
+    Button* b = new Button(mGame, name, mFont, onClick, mNextButtonPos, dims);
 
     //call button setcolor and setPointSize
 
     mButtons.emplace_back(b);
 
-    // mNextButtonPos.y -= mButtonOff->getHeight() + 20.0f;
+    mNextButtonPos.y -= .08f; //mSelected->getHeight() + 
 }
 
 
 void UIScreen::drawTexture(class Shader* shader, class Texture* texture, const glm::vec2& offset, float scale){
-
-    shader->setActive();
-
-    glm::mat4 world(1.f);
-
-    world = glm::translate(world, glm::vec3(mGame->getSnake()->getPosition().x , mGame->getSnake()->getPosition().y, 0.f));
-    world = glm::rotate(world, glm::radians(0.f), glm::vec3(0.f, 0.f, 1.f));
-    world = glm::scale(world, glm::vec3(.1f, .1f, .1f));
-
-    shader->setMatrixUniform("u_model", world);
-    shader->setMatrixUniform("u_viewproj", mGame->getCamera()->getViewProj());
-
-    texture->setActive();
-
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+    //todo
+    // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
 }
 
@@ -146,12 +136,14 @@ void UIScreen::setRelativeMouseMode(bool relative){
 
 //Button
 
-Button::Button(Game* game, const std::string& name, class Font* font,std::function<void()> onClick, const glm::vec2& pos): 
+Button::Button(Game* game, const std::string& name, class Font* font,std::function<void()> onClick, const glm::vec2& pos,
+const glm::vec2& dims): 
 mGame(game),
 mOnClick(onClick), 
 mNameText(nullptr),
 mFont(font), 
 mPosition(pos), 
+mDimensions(dims),
 mHighlighted(false),
 mBackground(nullptr){
     setName(name);
@@ -172,7 +164,8 @@ void Button::setName(const std::string& name){
         mNameText = nullptr;
     }
 
-    mNameText = new Text(mGame, glm::vec3(0.0), mFont, name, glm::vec2(1.0, 1.0), glm::vec3(1.f, 1.f, 1.f));
+    //edit this later
+    mNameText = new Text(mGame, glm::vec2(-0.01, 0.0), mFont, name, glm::vec2(.1, .1), glm::vec3(1.f, 0.f, 0.f));
 }
 
 void Button::setBackground(class Texture* tex){
@@ -192,12 +185,12 @@ bool Button::getHighlighted(){
 }
 
 bool Button::containsPoint(const glm::vec2& pt) const{
-    bool no = pt.x < (mPosition.x - mDimensions.x / 2.0f) ||
-    pt.x > (mPosition.x + mDimensions.x / 2.0f) ||
-    pt.y < (mPosition.y - mDimensions.y / 2.0f) ||
-    pt.y > (mPosition.y + mDimensions.y / 2.0f);
 
-    return !no;
+    bool inside = ((pt.x < (mPosition.x + (mDimensions.x / 2))) && (pt.x > (mPosition.x - (mDimensions.x / 2))))
+    &&
+    ((pt.y < (mPosition.y + (mDimensions.y / 2))) && (pt.y > (mPosition.y - (mDimensions.y / 2))));
+
+    return inside;
 }
 
 void Button::onClick(){
@@ -208,11 +201,13 @@ void Button::onClick(){
 
 
 void Button::drawBackground(class Shader* shader){
-    //todo
+    shader->setMatrixUniform("u_projection", mGame->getCamera()->getUIProjection());
+    mBackground->setActive();
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 
 
 void Button::drawText(class Shader* shader){
-    //todo
+    mNameText->drawText(shader);
 }
 

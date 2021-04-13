@@ -5,7 +5,8 @@ mGame(game), mPosition(position), mFont(font), mString(string), mPointScale(poin
 
     for(auto c = mString.begin(); c != mString.end(); c++){
         Character* ch = mFont->renderCharacter(*c);
-        mCharacters.emplace_back(ch);
+        if(ch)
+            mCharacters.emplace_back(ch);
     }
 
 }
