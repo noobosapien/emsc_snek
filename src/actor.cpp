@@ -1,6 +1,4 @@
-#include "actor.h"
-#include "game.h"
-#include "component.h"
+#include "headers/gamepch.h"
 
 Actor::Actor(Game* game): mState(EActive),
 mPosition(glm::vec2(0.f, 0.f)),

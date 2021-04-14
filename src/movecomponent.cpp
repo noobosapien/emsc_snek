@@ -1,6 +1,4 @@
-#include "movecomponent.h"
-#include "game.h"
-#include <stdio.h>
+#include "headers/gamepch.h"
 
 MoveComponent::MoveComponent(Actor* owner, int updateOrder): 
 Component(owner, updateOrder),

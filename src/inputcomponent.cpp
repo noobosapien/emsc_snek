@@ -1,4 +1,4 @@
-#include "inputcomponent.h"
+#include "headers/gamepch.h"
 
 InputComponent::InputComponent(Actor* owner): MoveComponent(owner),
 mUpKey(0), mDownKey(0), mLeftKey(0), mRightKey(0){

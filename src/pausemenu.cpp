@@ -1,4 +1,4 @@
-#include "pausemenu.h"
+#include "headers/gamepch.h"
 
 PauseMenu::PauseMenu(Game* game): UIScreen(game){
     mGame->setState(Game::EPause);

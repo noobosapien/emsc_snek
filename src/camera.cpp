@@ -1,6 +1,4 @@
-#include "camera.h"
-
-#include "glm/gtc/matrix_transform.hpp"
+#include "headers/gamepch.h"
 
 Camera::Camera(float left, float right, float bot, float top): mPosition(0.f), mRotation(0.f),
 mLeft(left), mRight(right), mTop(top), mBot(bot){

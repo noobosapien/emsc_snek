@@ -1,4 +1,4 @@
-#include "component.h"
+#include "headers/gamepch.h"
 
 Component::Component(Actor* owner, int updateOrder): mOwner(owner), mUpdateOrder(updateOrder)
 {

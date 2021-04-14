@@ -3,16 +3,7 @@
 #include <GLES2/gl2.h>
 #include <GL/glfw.h>
 #include <iostream>
-
-#include "game.h"
-#include "spritecomponent.h"
-#include "actor.h"
-#include "shader.h"
-#include "camera.h"
-
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include "headers/gamepch.h"
 
 SpriteComponent::SpriteComponent(Actor* owner, int drawOrder):Component(owner),
 mTexture(nullptr),

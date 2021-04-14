@@ -1,8 +1,7 @@
+#include "headers/gamepch.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "img/stb_image.h"
-#include "texture.h"
-#include <iostream>
-#include <malloc.h>
 
 Texture::Texture():mTextureID(0), mWidth(0), mHeight(0){
 

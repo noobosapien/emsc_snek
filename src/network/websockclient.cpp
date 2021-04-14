@@ -1,4 +1,4 @@
-#include "websockclient.h"
+#include "../headers/gamepch.h"
 
 WebsockClient::WebsockClient(Game* game): mGame(game){
     mReplicationManager = new ReplicationManager(game);

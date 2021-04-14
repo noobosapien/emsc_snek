@@ -1,4 +1,4 @@
-#include "bordercomponent.h"
+#include "headers/gamepch.h"
 
 BorderComponent::BorderComponent(Actor* owner, int drawOrder): Component(owner), mDrawOrder(drawOrder){
     mOwner->getGame()->addBorder(this);

@@ -1,4 +1,4 @@
-#include "snake.h"
+#include "headers/gamepch.h"
 
 Snake::Snake(Game* game): Actor(game), mDirChanged(true){
     setScale(.01f);

@@ -1,4 +1,4 @@
-#include "text.h"
+#include "headers/gamepch.h"
 
 Text::Text(class Game* game, glm::vec2 position, class Font* font, const std::string& string, glm::vec2 pointScale, glm::vec3 color):
 mGame(game), mPosition(position), mFont(font), mString(string), mPointScale(pointScale), mColor(color){

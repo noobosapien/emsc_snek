@@ -1,4 +1,4 @@
-#include "animatedspritecomponent.h"
+#include "headers/gamepch.h"
 
 AnimatedSpriteComponent::AnimatedSpriteComponent(Actor* owner, int drawOrder): SpriteComponent(owner, drawOrder),
 mCurrAnim(0), mCurrFrame(0), mAnimFps(0)

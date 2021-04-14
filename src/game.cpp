@@ -1,8 +1,6 @@
-#include "game.h"
-#include "pausemenu.h"
+#include "headers/gamepch.h"
 
-
- Game:: Game(): mTicksCount(0), mDeltaTime(0.0f), mUpdatingActors(false), mDebug(false)
+Game:: Game(): mTicksCount(0), mDeltaTime(0.0f), mUpdatingActors(false), mDebug(false)
 {
 }
 

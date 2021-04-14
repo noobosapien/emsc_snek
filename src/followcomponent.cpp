@@ -1,4 +1,4 @@
-#include "followcomponent.h"
+#include "headers/gamepch.h"
 
 FollowComponent::FollowComponent(Actor* owner, int updateOrder): Component(owner, updateOrder), t(0.f){
 

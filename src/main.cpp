@@ -1,5 +1,4 @@
-#include <emscripten.h>
-#include "game.h"
+#include "headers/gamepch.h"
 
 static Game* game;
 

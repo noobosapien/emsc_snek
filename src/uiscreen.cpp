@@ -1,6 +1,4 @@
-#include "uiscreen.h"
-
-//UISCREEN
+#include "headers/gamepch.h"
 
 UIScreen::UIScreen(Game* game): mGame(game),
 mTitle(nullptr), mBackground(nullptr), mTitlePos(0.0f, 300.0f), 

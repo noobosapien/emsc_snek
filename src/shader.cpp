@@ -1,4 +1,4 @@
-#include "shader.h"
+#include "headers/gamepch.h"
 
 Shader::Shader(): mVertexShader(0), mFragShader(0), mShaderProgram(0), VAO(0), VBO(0)
 {

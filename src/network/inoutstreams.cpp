@@ -1,4 +1,4 @@
-#include "inoutstreams.h"
+#include "../headers/gamepch.h"
 
 InputStream::InputStream(uint8_t* inBuffer, uint32_t bitCount):
 mBuffer(inBuffer), mBitCapacity(bitCount), mBitHead(0), mIsBufferOwner(false)

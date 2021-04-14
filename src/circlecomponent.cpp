@@ -1,4 +1,4 @@
-#include "circlecomponent.h"
+#include "headers/gamepch.h"
 
 CircleComponent::CircleComponent(Actor* owner, int drawOrder): Component(owner), mRadius(0.f), mDrawOrder(drawOrder){
     mOwner->getGame()->addCircle(this);

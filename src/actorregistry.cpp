@@ -1,4 +1,4 @@
-#include "actorregistry.h"
+#include "headers/gamepch.h"
 
 ActorRegistry* ActorRegistry::sInstance = nullptr;
 

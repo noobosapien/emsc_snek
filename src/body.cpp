@@ -1,4 +1,4 @@
-#include "body.h"
+#include "headers/gamepch.h"
 
 Body::Body(Game* game, Snake* snake, Body* body): Actor(game), mSnake(snake), mPrevBody(body){
     setScale(.01f);
