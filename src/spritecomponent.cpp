@@ -1,8 +1,3 @@
-#include <SDL2/SDL.h>
-#include <SDL_opengl.h>
-#include <GLES2/gl2.h>
-#include <GL/glfw.h>
-#include <iostream>
 #include "headers/gamepch.h"
 
 SpriteComponent::SpriteComponent(Actor* owner, int drawOrder):Component(owner),

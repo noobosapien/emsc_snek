@@ -17,13 +17,6 @@ bool Game::initialize(){
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
     SDL_CreateWindowAndRenderer(Game::WIN_WIDTH, Game::WIN_HEIGHT, 0, &window, &renderer);
-    // SDL_CreateWindowAndRenderer(1920, 1920, 0, &window, &renderer);
-
-
-    // if(TTF_Init() != 0){
-    //     printf("Failed to initialize SDL_ttf");
-    //     return false;
-    // }
 
     //Loads freetype
     if(FT_Init_FreeType(&mFtLib)){
