@@ -1,6 +1,6 @@
 #include "headers/gamepch.h"
 
-Game:: Game(): mTicksCount(0), mDeltaTime(0.0f), mUpdatingActors(false), mDebug(false)
+Game:: Game(): mUpdatingActors(false), mDebug(false)
 {
 }
 
@@ -9,36 +9,14 @@ int Game::WIN_HEIGHT = 800;
 glm::vec2 Game::WIN_RES = glm::vec2(1.0);
 
 bool Game::initialize(){
-    SDL_Init(SDL_INIT_VIDEO);
-
-    // Enable double buffering
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	// Force OpenGL to use hardware acceleration
-	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-
-    SDL_CreateWindowAndRenderer(Game::WIN_WIDTH, Game::WIN_HEIGHT, 0, &window, &renderer);
-
-    //Loads freetype
-    if(FT_Init_FreeType(&mFtLib)){
-        printf("ERROR:FREETYPE Could not initialize the library\n");
-        return false;
-    }
-
-    gl_context = SDL_GL_CreateContext(window);
-    SDL_GL_MakeCurrent(window, gl_context);
-
+    Engine::initialize(Game::WIN_WIDTH, Game::WIN_HEIGHT);
+    
     if(!loadShaders()){
         printf("Failed to load shaders\n");
     }
-    
-    glViewport(0, 0, Game::WIN_WIDTH, Game::WIN_HEIGHT);
-    // glViewport(0, 0, 1920, 1920);
-    
+
     loadData();
     loadNetwork();
-    
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // mGameState = EStart;
 
@@ -54,12 +32,13 @@ void Game::runLoop(){
 }
 
 bool Game::shutDown(){
+    Engine::shutDown();
+    
     mCircleShader->unLoad();
     delete mCircleShader;
 
     mSpriteShader->unLoad();
     delete mSpriteShader;
-    return true;
 
     //delete actors
     while(!mActors.empty()){
@@ -67,9 +46,8 @@ bool Game::shutDown(){
     }
 
     //delete ui
+    return true;
 
-    //unload Freetype
-    FT_Done_FreeType(mFtLib);
 }
 
 void Game::setWinDim(int width, int height){
@@ -136,24 +114,17 @@ void Game::processInput(){
 }
 
 void Game::updateGame(){
-    while(!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 16)); //60fps
+    Engine::updateGame();
 
     mWebSocket->processAllPackets();
     mWebSocket->sendOutgoing();
-
-    mDeltaTime = static_cast<float>(SDL_GetTicks() - mTicksCount) / 1000;
-    
-    if(mDeltaTime > 0.05f)
-        mDeltaTime = 0.05f;
-    
-    mTicksCount = SDL_GetTicks();
 
     if(mGameState == EGameplay){
         //Actor stuff
 
         mUpdatingActors = true;
         for(auto actor: mActors){
-            actor->update(mDeltaTime);
+            actor->update(this->mDeltaTime);
         }
         mUpdatingActors = false;
 
@@ -177,7 +148,7 @@ void Game::updateGame(){
 
     for( auto ui : mUIStack){
         if(ui->getState() == UIScreen::EActive){
-            ui->update(mDeltaTime);
+            ui->update(this->mDeltaTime);
         }
     }
 
@@ -196,11 +167,7 @@ void Game::updateGame(){
     IMPORTANT FOR SPRITES
 */
 void Game::generateOutput(){
-    glClearColor(0.313, 0.176, 0.47, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+    Engine::generateOutput();
     
     //set shaders, vertex arrays and draw the sprites
 

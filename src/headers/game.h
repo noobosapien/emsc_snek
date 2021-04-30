@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-class Game
+class Game : public Engine
 {
 public:
     Game();
@@ -57,8 +57,8 @@ public:
 
 private:
     void processInput();
-    void updateGame();
-    void generateOutput();
+    void updateGame() override;
+    void generateOutput() override;
 
     void handleKeyPress(int key);
 
@@ -76,14 +76,8 @@ private:
 
     bool mDebug;
 
-    SDL_Window* window;
-    SDL_Renderer* renderer;
-    SDL_GLContext gl_context;
-
-    FT_Library mFtLib;
-
-    Uint32 mTicksCount;
-    float mDeltaTime;
+    // Uint32 mTicksCount;
+    // float mDeltaTime;
 
     std::vector<Actor*> mActors;
     std::vector<Actor*> mPendingActors;

@@ -23,6 +23,8 @@ int main(int argc, char* argv[]){
 
     if(success)
         emscripten_set_main_loop(loop, 0, 0);
-
+    else
+        delete game;
+    
     return 0;
 }
