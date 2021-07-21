@@ -11,7 +11,10 @@ class Engine{
         void initialize(int width, int height);
         void shutDown();
 
-    
+        SDL_Renderer* getRenderer(){return renderer;}
+        void setDebug(bool value) {mDebug = value;}
+
+
     protected:
         virtual void updateGame();
         virtual void generateOutput();
@@ -19,6 +22,8 @@ class Engine{
         SDL_Window* window;
         SDL_Renderer* renderer;
         SDL_GLContext gl_context;
+
+        bool mDebug;
 
         FT_Library mFtLib;
 

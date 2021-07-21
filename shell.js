@@ -15,6 +15,11 @@ function ModuleLoaded(){
             setWinDim(window.innerWidth, window.innerHeight);
             canvas.scrollIntoView({block: "center"});
         });
+
+        // window.addEventListener("load", () => {
+        //     setWinDim(window.innerWidth, window.innerHeight);
+        //     canvas.scrollIntoView({block: "center"});
+        // });
     }
 
     canvas.scrollIntoView({block: "center"});

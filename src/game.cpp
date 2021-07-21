@@ -1,6 +1,6 @@
 #include "headers/gamepch.h"
 
-Game:: Game(): mUpdatingActors(false), mDebug(false)
+Game:: Game(): mUpdatingActors(false)
 {
 }
 
@@ -13,10 +13,35 @@ bool Game::initialize(){
     
     if(!loadShaders()){
         printf("Failed to load shaders\n");
+        return false;
     }
 
     loadData();
     loadNetwork();
+
+    //temp
+    glGenFramebuffers(1, &mFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
+    
+    glGenTextures(1, &textureColorbuffer);
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WIN_WIDTH, WIN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+    
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        printf("Error creating the framebuffer: %d\n", glCheckFramebufferStatus(GL_FRAMEBUFFER));
+    
+
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_STENCIL, WIN_WIDTH, WIN_HEIGHT); // use a single renderbuffer object for both a depth AND stencil buffer.
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        printf("Error creating the framebuffer %d \n", glCheckFramebufferStatus(GL_FRAMEBUFFER));
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // mGameState = EStart;
 
@@ -52,6 +77,8 @@ bool Game::shutDown(){
 
 void Game::setWinDim(int width, int height){
     printf("w(%d) h(%d)\n", width, height);
+    // height = 1000;
+    // width = 1000;
     if(height > width){
         Game::WIN_HEIGHT = height;
         Game::WIN_WIDTH = width;
@@ -95,6 +122,13 @@ void Game::processInput(){
                     mUIStack.back()->handleKeyPress(event.button.button);
                 }
                 break;
+            case SDL_FINGERDOWN:
+                if(mGameState == EGameplay){
+                    new PauseMenu(this);
+                }else if(!mUIStack.empty()){
+
+                }
+                break;
             default:
                 break;
         }
@@ -116,10 +150,10 @@ void Game::processInput(){
 void Game::updateGame(){
     Engine::updateGame();
 
-    mWebSocket->processAllPackets();
-    mWebSocket->sendOutgoing();
-
     if(mGameState == EGameplay){
+        mWebSocket->processAllPackets();
+        mWebSocket->sendOutgoing();
+
         //Actor stuff
 
         mUpdatingActors = true;
@@ -168,8 +202,20 @@ void Game::updateGame(){
 */
 void Game::generateOutput(){
     Engine::generateOutput();
-    
+
     //set shaders, vertex arrays and draw the sprites
+
+    //temp
+    // glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
+    // glEnable(GL_DEPTH_TEST);
+
+    // glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    for(auto ui: mUIStack){
+        ui->draw(mTextShader, mUIShader);
+    }
+    
 
     for(auto border: mBorders){
         border->draw(mBorderShader);
@@ -179,16 +225,24 @@ void Game::generateOutput(){
         sprite->draw(mSpriteShader);
     }
 
-    
-    for(auto ui: mUIStack){
-        ui->draw(mTextShader, mUIShader);
-    }
-
     if(mDebug)
         for(auto circle: mCircles){
             circle->draw(mCircleShader);
         }
-    
+
+    //temp
+
+    // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // glDisable(GL_DEPTH_TEST);
+    // // glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
+    // // glClear(GL_COLOR_BUFFER_BIT);
+
+    // // mScreenQuad->setActive();
+    // glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+	// // glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
     SDL_GL_SwapWindow(window);
 }
 
@@ -266,6 +320,33 @@ bool Game::loadShaders(){
     
     if(!loadUIShader())
         return false;
+    
+    //temp
+    mScreenQuad = new Shader();
+
+    if(!mScreenQuad->load("src/shaders/screen.vert", "src/shaders/screen.frag")){
+        return false;
+    }
+
+    mScreenQuad->setActive();
+
+    float vertices[] = {
+        -1.f,  1.f, 0.f, 1.f,
+		 1.f,  1.f, 1.f, 1.f,
+		 1.f, -1.f, 1.f, 0.f,
+		-1.f, -1.f, 0.f, 0.f
+    };
+
+	unsigned int indices[] = {
+		0, 1, 2,
+        2, 3, 0
+	};
+    
+
+    mScreenQuad->setVertexData(vertices, 4, indices, 6, 4);
+
+    mScreenQuad->setAttrib("a_position", 2, 4, 0);
+    mScreenQuad->setAttrib("a_texCoord", 2, 4, 2);
     
     return true;
 }

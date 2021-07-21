@@ -1,7 +1,7 @@
 #include "../headers/engine/enginepch.h"
 
 
-Engine::Engine(): mTicksCount(0), mDeltaTime(0.0f){
+Engine::Engine(): mTicksCount(0), mDeltaTime(0.0f), mDebug(false){
 
 }
 

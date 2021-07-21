@@ -18,7 +18,7 @@ void Camera::recomputeViewProj(){
     mView = glm::inverse(translate);
 
     mViewProj = mProjection * mView;
-    mUIViewProj = mUIProjection * mView;
+    mUIViewProj = mUIProjection ;//* mView;
 }
 
 void Camera::addViewportVertices(float left, float right, float bot, float top){

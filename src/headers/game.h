@@ -25,24 +25,20 @@ public:
     void addCircle(CircleComponent* circle);
     void removeCircle(CircleComponent* circle);
 
-    void addBorder(class BorderComponent* border);
-    void removeBorder(class BorderComponent* border);
+    void addBorder( BorderComponent* border);
+    void removeBorder( BorderComponent* border);
 
-    void setSnake(class Snake* snake);
-    class Snake* getSnake();
-
-    SDL_Renderer* getRenderer(){return renderer;}
+    void setSnake( Snake* snake);
+    Snake* getSnake();
 
     Texture* getTexture(const std::string& filename);
 
-    void setDebug(bool value) {mDebug = value;}
+    Camera* getCamera(){return mCamera;}
 
-    class Camera* getCamera(){return mCamera;}
+    std::vector< UIScreen*>& getUIStack();
+    void pushUI( UIScreen* screen);
 
-    std::vector<class UIScreen*>& getUIStack();
-    void pushUI(class UIScreen* screen);
-
-    class Font* getFont(const std::string& fileName);
+    Font* getFont(const std::string& fileName);
     void loadText(const std::string& fileName);
     const std::string& getText(const std::string& key);
 
@@ -74,17 +70,12 @@ private:
     bool loadTextShader();
     bool loadUIShader();
 
-    bool mDebug;
-
-    // Uint32 mTicksCount;
-    // float mDeltaTime;
-
     std::vector<Actor*> mActors;
     std::vector<Actor*> mPendingActors;
     bool mUpdatingActors;
 
     GameState mGameState;
-    class Snake* mSnake;
+    Snake* mSnake;
 
     Shader* mSpriteShader;
     Shader* mCircleShader;
@@ -98,17 +89,23 @@ private:
 
     std::vector<CircleComponent*> mCircles;
 
-    std::vector<class BorderComponent*> mBorders;
+    std::vector< BorderComponent*> mBorders;
 
-    std::vector<class UIScreen*> mUIStack;
+    std::vector< UIScreen*> mUIStack;
 
-    std::unordered_map<std::string, class Font*> mFonts;
+    std::unordered_map<std::string,  Font*> mFonts;
 
     std::unordered_map<std::string, std::string> mText;
 
-    class Camera* mCamera;
+    Camera* mCamera;
 
-    class WebsockClient* mWebSocket;
+    WebsockClient* mWebSocket;
+
+    //temp
+    unsigned int mFBO;
+    unsigned int textureColorbuffer;
+    unsigned int rbo;
+    Shader* mScreenQuad;
 
 };
 

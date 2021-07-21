@@ -104,8 +104,10 @@ void UIScreen::setTitle(const std::string& text, const glm::vec2& position, cons
 
 void UIScreen::addButton(const std::string& name, std::function<void()> onClick){
 
-    // glm::vec2 dims (static_cast<float>(mButtonOn->getWidth()), static_cast<float>(mButtonOn->getHeight()));
-    glm::vec2 dims(10.f);
+
+    glm::vec2 dims(static_cast<float>(mSelected->getWidth()), static_cast<float>(mSelected->getHeight()));
+    printf("button width = %d\n", mSelected->getWidth());
+    printf("button Height = %d\n", mSelected->getHeight());
     Button* b = new Button(mGame, name, mFont, onClick, mNextButtonPos, dims);
 
     //call button setcolor and setPointSize
@@ -183,10 +185,23 @@ bool Button::getHighlighted(){
 }
 
 bool Button::containsPoint(const glm::vec2& pt) const{
+    std::cout << pt.x << ", " << pt.y << "     " << mPosition.x - (mDimensions.x / 2) << ", " << mPosition.y - (mDimensions.y / 2) << std::endl;
+    
+    glm::vec2 normPt = glm::vec2((float)(pt.x * Game::WIN_RES.x)/Game::WIN_WIDTH, (float)(pt.y * Game::WIN_RES.y)/Game::WIN_HEIGHT);
+    glm::vec2 normPos = glm::vec2((float)(mPosition.x * Game::WIN_RES.x)/Game::WIN_WIDTH, (float)(mPosition.y * Game::WIN_RES.y)/Game::WIN_HEIGHT);
+    glm::vec2 normDims = glm::vec2((float)(mDimensions.x)/Game::WIN_WIDTH, (float)(mDimensions.y)/Game::WIN_HEIGHT);
+    
+    // bool inside = ((pt.x < (mPosition.x + (mDimensions.x / 2))) && (pt.x > (mPosition.x - (mDimensions.x / 2))))
+    // &&
+    // ((pt.y < (mPosition.y + (mDimensions.y / 2))) && (pt.y > (mPosition.y - (mDimensions.y / 2))));
 
-    bool inside = ((pt.x < (mPosition.x + (mDimensions.x / 2))) && (pt.x > (mPosition.x - (mDimensions.x / 2))))
+    // std::cout << pt.x << ", " << pt.y << "     " << normPos.x - (normDims.x) << ", " << normPos.y - (normDims.y) << "     "
+    // << Game::WIN_RES.x << ", " << Game::WIN_RES.y 
+    // << std::endl;
+
+    bool inside = ((normPt.x < (normPos.x + (normDims.x))) && (normPt.x > (normPos.x - (normDims.x))))
     &&
-    ((pt.y < (mPosition.y + (mDimensions.y / 2))) && (pt.y > (mPosition.y - (mDimensions.y / 2))));
+    ((normPt.y < (normPos.y + (normDims.y))) && (normPt.y > (normPos.y - (normDims.y))));
 
     return inside;
 }
@@ -199,8 +214,32 @@ void Button::onClick(){
 
 
 void Button::drawBackground(class Shader* shader){
-    shader->setMatrixUniform("u_projection", mGame->getCamera()->getUIProjection());
+    shader->setActive();
+
+    glm::mat4 model = glm::mat4(1.f);
+    model = glm::translate(model, glm::vec3(0.0, 0.0, 0.0));
+    model = glm::scale(model, glm::vec3(0.1, 0.1, 0.1));
+
+    shader->setMatrixUniform("u_model", model);
+    shader->setMatrixUniform("u_viewproj", mGame->getCamera()->getUIViewProj());
+    // shader->setMatrixUniform("u_viewproj", mGame->getCamera()->getUIProjection());
+
+    // shader->setMatrixUniform("u_projection", mGame->getCamera()->getUIProjection());
     mBackground->setActive();
+    // // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+    // float x = ((float)mDimensions.x / Game::WIN_WIDTH) * Game::WIN_RES.x;
+    // float y = ((float)mDimensions.y / Game::WIN_HEIGHT) * Game::WIN_RES.y;
+
+    // // std::cout << x * Game::WIN_WIDTH / Game::WIN_RES.x << ", " << y * Game::WIN_HEIGHT / Game::WIN_RES.y << std::endl;
+
+    // float verts[] = {
+    //         -x, -y, 0.f, 0.f,
+    //         -x, y, 0.f, 1.f,
+    //         x, y, 1.f, 1.f,
+    //         x, -y, 1.f, 0.f,
+    //     };
+
+    // shader->setBufferSubData(verts, 4, 4);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 

@@ -12,7 +12,7 @@ InputComponent::~InputComponent(){
 void InputComponent::processInput(SDL_Event& event){
     switch(event.type){
         case SDL_FINGERDOWN:
-            getOwner()->addBody();
+            // getOwner()->addBody();
             break;
         case SDL_KEYDOWN:
 
