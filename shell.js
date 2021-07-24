@@ -5,6 +5,14 @@ var setWinDim = null;
 var setInput = null;
 var paused = false;
 
+function backToStart(){
+    console.log("BACK TO START");
+    document.getElementById("game").style.opacity = 0;
+    document.getElementById("game").style.zIndex = 0;
+    document.getElementById("anim-header").style.opacity = 1;
+    document.getElementById("anim-header").style.zIndex = 30;
+}
+
 function ModuleLoaded(){
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext("2d");
@@ -39,6 +47,20 @@ function ModuleLoaded(){
             : document.getElementById("pause").style.background = "url('src/textures/play.png') no-repeat";
             document.getElementById("pause").style.backgroundSize = "35px 35px";
             paused = !paused;
+        }
+
+        document.getElementById("start").onclick = function(event) {
+            event.preventDefault();
+            setInput("start");
+            document.getElementById("game").style.opacity = 1;
+            document.getElementById("game").style.zIndex = 30;
+            document.getElementById("anim-header").style.opacity = 0;
+            document.getElementById("anim-header").style.zIndex = 0;
+        }
+
+        document.getElementById("exit").onclick = function(event) {
+            event.preventDefault();
+            setInput("end");
         }
     }
 

@@ -10,6 +10,7 @@ mTexHeight(0){
 
 SpriteComponent::~SpriteComponent(){
     mOwner->getGame()->removeSprite(this);
+    // Component::~Component();
 }
 
 void SpriteComponent::draw(Shader* shader){

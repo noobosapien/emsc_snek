@@ -10,6 +10,7 @@ public:
     bool shutDown();
     void setWinDim(int width, int height);
     void setInput(char* input);
+    void resetGame();
 
     enum GameState{
         EStart,

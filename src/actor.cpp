@@ -13,6 +13,7 @@ mRecomputeWorldTransform(true)
 
 Actor::~Actor(){
     for(auto component: mComponents){
+        std::cout << "Component size: " << mComponents.size() << std::endl;
         delete component;
     }
     mGame->removeActor(this);

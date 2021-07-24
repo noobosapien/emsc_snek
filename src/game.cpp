@@ -80,11 +80,30 @@ void Game::setInput(char* input) {
     std::string in = std::string(input);
     if(in == "pause"){
         setState(Game::EPause);
-    }else if (in == "play"){
+    }
+    else if (in == "play"){
         setState(Game::EGameplay);
-    }else{
+    }
+    else if (in == "start"){
+        setState(EGameplay);
+    }
+    else if(in == "end"){
+        resetGame();
+    }
+    else{
         jsInput.push_back(in);
     }
+}
+
+void Game::resetGame(){
+    //unload data
+    unloadData();
+    //load data
+    loadData();
+    //EM_ASM to set hero header
+    EM_ASM(backToStart());
+    //set state to start
+    setState(EStart);
 }
 
 //private
@@ -219,8 +238,17 @@ void Game::loadData(){
 }
 
 void Game::unloadData(){
-    while(!mActors.empty()){
-        delete mActors.back();
+    // while(!mActors.empty()){
+    //    removeActor(mActors.back());
+    // }
+
+    if(mSnake){
+        delete mSnake;
+        mSnake = nullptr;
+    }
+    
+    for(auto actor : mActors){
+        removeActor(actor);
     }
 
     for(auto i : mTextures){
@@ -228,6 +256,7 @@ void Game::unloadData(){
         delete i.second;
     }
     mTextures.clear();
+    delete mCamera;
 }
 
 void Game::loadNetwork(){
@@ -364,7 +393,9 @@ void Game::addSprite(SpriteComponent* sprite){
 void Game::removeSprite(SpriteComponent* sprite){
     auto iter = std::find(mSprites.begin(), mSprites.end(), sprite);
 
-    mSprites.erase(iter);
+    if(iter != mSprites.end()){
+        mSprites.erase(iter);
+    }
 }
 
 Texture* Game::getTexture(const std::string& filename){
