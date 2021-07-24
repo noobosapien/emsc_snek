@@ -1,0 +1,58 @@
+.header {
+    color: rgb(5, 204, 128);
+}
+
+#up {
+    position: fixed;
+    top: 70%;
+    left: 43%;
+    background: url('../src/textures/up.png') no-repeat;
+    background-size: 45px 45px;
+    width: 50px;
+    height: 50px;
+    border: none;
+}
+
+#down {
+    position: fixed;
+    top: 85%;
+    left: 43%;
+    background: url('../src/textures/down.png') no-repeat;
+    background-size: 45px 45px;
+    width: 50px;
+    height: 50px;
+    border: none;
+}
+
+#left {
+    position: fixed;
+    top: 77%;
+    left: 17%;
+    background: url('../src/textures/left.png') no-repeat;
+    background-size: 45px 45px;
+    width: 50px;
+    height: 50px;
+    border: none;
+}
+
+#right {
+    position: fixed;
+    top: 77%;
+    left: 72%;
+    background: url('../src/textures/right.png') no-repeat;
+    background-size: 45px 45px;
+    width: 50px;
+    height: 50px;
+    border: none;
+}
+
+#pause {
+    position: fixed;
+    top: 10%;
+    left: 80%;
+    background: url('../src/textures/pause.png') no-repeat;
+    border: none;
+    background-size: 35px 35px;
+    width: 40px;
+    height: 40px;
+}

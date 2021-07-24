@@ -25,8 +25,6 @@ class Engine{
 
         bool mDebug;
 
-        FT_Library mFtLib;
-
         Uint32 mTicksCount;
         float mDeltaTime;
     

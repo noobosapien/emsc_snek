@@ -11,9 +11,6 @@ InputComponent::~InputComponent(){
 
 void InputComponent::processInput(SDL_Event& event){
     switch(event.type){
-        case SDL_FINGERDOWN:
-            // getOwner()->addBody();
-            break;
         case SDL_KEYDOWN:
 
             int key = event.key.keysym.sym;
@@ -48,4 +45,40 @@ void InputComponent::processInput(SDL_Event& event){
             break;
         
     }
+
+
+    //js input
+    if(!getOwner()->getGame()->getJSInput().empty()){
+        std::string input = getOwner()->getGame()->getJSInput().front();
+        getOwner()->getGame()->getJSInput().pop_front();
+        printf("%s\n", input.c_str());
+
+        //I know this is terrible
+
+        if(input == "left"){
+            if(getDirection() != RIGHT){
+                setDirection(LEFT);
+                getOwner()->snakeDirChanged();
+            }
+        }
+        else if( input == "right"){
+            if(getDirection() != LEFT){
+                setDirection(RIGHT);
+                getOwner()->snakeDirChanged();
+            }
+        }
+        else if( input == "up"){
+            if(getDirection() != DOWN){
+                setDirection(UP);
+                getOwner()->snakeDirChanged();
+            }
+        }
+        else if( input == "down"){
+            if(getDirection() != UP){
+                setDirection(DOWN);
+                getOwner()->snakeDirChanged();
+            }
+        }
+    }
+    
 }

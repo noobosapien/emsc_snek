@@ -10,10 +10,10 @@ Font::~Font(){
 
 bool Font::loadCharacters(const std::string& pathName, int pointSize){
     FT_Face face;
-    if(FT_New_Face(mGame->getFtLib(), pathName.c_str(), 0, &face)){
-        printf("ERROR::FREETYPE could not load the font\n");
-        return false;
-    }
+    // if(FT_New_Face(mGame->getFtLib(), pathName.c_str(), 0, &face)){
+    //     printf("ERROR::FREETYPE could not load the font\n");
+    //     return false;
+    // }
 
     if(FT_Set_Pixel_Sizes(face, 0, pointSize)){
         printf("ERROR::FREETYPE could not load the pointsize of the font\n");

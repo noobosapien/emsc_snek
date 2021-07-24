@@ -9,6 +9,7 @@ public:
     void runLoop();
     bool shutDown();
     void setWinDim(int width, int height);
+    void setInput(char* input);
 
     enum GameState{
         EStart,
@@ -35,17 +36,19 @@ public:
 
     Camera* getCamera(){return mCamera;}
 
-    std::vector< UIScreen*>& getUIStack();
-    void pushUI( UIScreen* screen);
+    // std::vector< UIScreen*>& getUIStack();
+    // void pushUI( UIScreen* screen);
 
-    Font* getFont(const std::string& fileName);
-    void loadText(const std::string& fileName);
-    const std::string& getText(const std::string& key);
+    // Font* getFont(const std::string& fileName);
+    // void loadText(const std::string& fileName);
+    // const std::string& getText(const std::string& key);
 
     void setState(GameState state);
     GameState getState();
 
-    FT_Library& getFtLib();
+    std::deque<std::string>& getJSInput();
+
+    // FT_Library& getFtLib();
 
     static int WIN_WIDTH;
     static int WIN_HEIGHT;
@@ -67,8 +70,8 @@ private:
     bool loadSpriteShader();
     bool loadCircleShader();
     bool loadBorderShader();
-    bool loadTextShader();
-    bool loadUIShader();
+    // bool loadTextShader();
+    // bool loadUIShader();
 
     std::vector<Actor*> mActors;
     std::vector<Actor*> mPendingActors;
@@ -80,8 +83,8 @@ private:
     Shader* mSpriteShader;
     Shader* mCircleShader;
     Shader* mBorderShader;
-    Shader* mTextShader;
-    Shader* mUIShader;
+    // Shader* mTextShader;
+    // Shader* mUIShader;
 
     std::vector<SpriteComponent*> mSprites;
 
@@ -91,21 +94,18 @@ private:
 
     std::vector< BorderComponent*> mBorders;
 
-    std::vector< UIScreen*> mUIStack;
+    // std::vector< UIScreen*> mUIStack;
 
-    std::unordered_map<std::string,  Font*> mFonts;
+    // std::unordered_map<std::string,  Font*> mFonts;
 
-    std::unordered_map<std::string, std::string> mText;
+    // std::unordered_map<std::string, std::string> mText;
 
     Camera* mCamera;
 
     WebsockClient* mWebSocket;
 
-    //temp
-    unsigned int mFBO;
-    unsigned int textureColorbuffer;
-    unsigned int rbo;
-    Shader* mScreenQuad;
+    //for javascript input
+    std::deque<std::string> jsInput;
 
 };
 

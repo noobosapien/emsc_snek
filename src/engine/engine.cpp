@@ -20,12 +20,6 @@ void Engine::initialize(int width, int height){
 
     SDL_CreateWindowAndRenderer(width, height, 0, &window, &renderer);
 
-    //Loads freetype
-    if(FT_Init_FreeType(&mFtLib)){
-        printf("ERROR:FREETYPE Could not initialize the library\n");
-        return;
-    }
-
     gl_context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, gl_context);
     
@@ -36,9 +30,6 @@ void Engine::initialize(int width, int height){
 }
 
 void Engine::shutDown(){
-    //unload Freetype
-    FT_Done_FreeType(mFtLib);
-
     SDL_Quit();
 }
 
@@ -54,7 +45,7 @@ void Engine::updateGame(){
 }
 
 void Engine::generateOutput(){
-    glClearColor(0.313, 0.176, 0.47, 1.0);
+    glClearColor(0.130, 0.130, 0.130, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

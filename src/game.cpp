@@ -1,6 +1,6 @@
 #include "headers/gamepch.h"
 
-Game:: Game(): mUpdatingActors(false)
+Game:: Game(): mUpdatingActors(false), mSnake(nullptr)
 {
 }
 
@@ -19,33 +19,9 @@ bool Game::initialize(){
     loadData();
     loadNetwork();
 
-    //temp
-    glGenFramebuffers(1, &mFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
-    
-    glGenTextures(1, &textureColorbuffer);
-    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WIN_WIDTH, WIN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
-    
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        printf("Error creating the framebuffer: %d\n", glCheckFramebufferStatus(GL_FRAMEBUFFER));
-    
-
-    glGenRenderbuffers(1, &rbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_STENCIL, WIN_WIDTH, WIN_HEIGHT); // use a single renderbuffer object for both a depth AND stencil buffer.
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        printf("Error creating the framebuffer %d \n", glCheckFramebufferStatus(GL_FRAMEBUFFER));
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
     // mGameState = EStart;
 
-    mGameState = EGameplay;
+    mGameState = EStart;
 
     return true;
 }
@@ -77,8 +53,8 @@ bool Game::shutDown(){
 
 void Game::setWinDim(int width, int height){
     printf("w(%d) h(%d)\n", width, height);
-    // height = 1000;
-    // width = 1000;
+    // height = 2000;
+    // width = 2000;
     if(height > width){
         Game::WIN_HEIGHT = height;
         Game::WIN_WIDTH = width;
@@ -92,7 +68,22 @@ void Game::setWinDim(int width, int height){
         Game::WIN_RES = glm::vec2((float)width/height, 1.0);
 
         SDL_SetWindowSize(window, width, height);
+        // glViewport(0, -width/2 + height/2, width, width);
         glViewport(0, -width/2 + height/2, width, width);
+
+    }
+}
+
+void Game::setInput(char* input) {
+    printf("%s\n", input);
+
+    std::string in = std::string(input);
+    if(in == "pause"){
+        setState(Game::EPause);
+    }else if (in == "play"){
+        setState(Game::EGameplay);
+    }else{
+        jsInput.push_back(in);
     }
 }
 
@@ -108,42 +99,30 @@ void Game::processInput(){
                 break;
             case SDL_KEYDOWN:
                 if(!event.key.repeat){
-                    if(mGameState == EGameplay){ //might need to change this when the HUD is included
+                    if(mGameState == EGameplay || mGameState == EPause){ //might need to change this when the HUD is included
                         handleKeyPress(event.key.keysym.sym);
-                    }else if(!mUIStack.empty()){
-                        mUIStack.back()->handleKeyPress(event.key.keysym.sym);
                     }
                 }
                 break;
             case SDL_MOUSEBUTTONDOWN:
-                if(mGameState == EGameplay){
+                if(mGameState == EGameplay || mGameState == EPause){
                     handleKeyPress(event.button.button);
-                }else if(!mUIStack.empty()){
-                    mUIStack.back()->handleKeyPress(event.button.button);
-                }
-                break;
-            case SDL_FINGERDOWN:
-                if(mGameState == EGameplay){
-                    new PauseMenu(this);
-                }else if(!mUIStack.empty()){
-
                 }
                 break;
             default:
                 break;
         }
+        
+    }
 
-        if(mGameState == EGameplay){
-            mUpdatingActors = true;
-            for(auto actor: mActors){
-                if(actor->getState() == Actor::EActive){
-                    actor->processInput(event);
-                }
+    if(mGameState == EGameplay){
+        mUpdatingActors = true;
+        for(auto actor: mActors){
+            if(actor->getState() == Actor::EActive){
+                actor->processInput(event);
             }
-            mUpdatingActors = false;
-        }else if(!mUIStack.empty()){
-            mUIStack.back()->processInput(event);
         }
+        mUpdatingActors = false;
     }
 }
 
@@ -180,21 +159,6 @@ void Game::updateGame(){
         }
     }
 
-    for( auto ui : mUIStack){
-        if(ui->getState() == UIScreen::EActive){
-            ui->update(this->mDeltaTime);
-        }
-    }
-
-    auto iter = mUIStack.begin();
-    while(iter != mUIStack.end()){
-        if((*iter)->getState() == UIScreen::EClosing){
-            delete *iter;
-            iter = mUIStack.erase(iter);
-        }else{
-            ++iter;
-        }
-    }
 }
 
 /*
@@ -204,18 +168,6 @@ void Game::generateOutput(){
     Engine::generateOutput();
 
     //set shaders, vertex arrays and draw the sprites
-
-    //temp
-    // glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
-    // glEnable(GL_DEPTH_TEST);
-
-    // glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    for(auto ui: mUIStack){
-        ui->draw(mTextShader, mUIShader);
-    }
-    
 
     for(auto border: mBorders){
         border->draw(mBorderShader);
@@ -229,19 +181,6 @@ void Game::generateOutput(){
         for(auto circle: mCircles){
             circle->draw(mCircleShader);
         }
-
-    //temp
-
-    // glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    // glDisable(GL_DEPTH_TEST);
-    // // glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
-    // // glClear(GL_COLOR_BUFFER_BIT);
-
-    // // mScreenQuad->setActive();
-    // glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-    // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-	// // glDrawArrays(GL_TRIANGLES, 0, 6);
-
 
     SDL_GL_SwapWindow(window);
 }
@@ -274,8 +213,6 @@ void Game::loadData(){
     mCamera = new Camera();
     Snake* snake = new Snake(this);
     
-    loadText("file");
-
     //to add the border create an actor
     Actor* temp = new Actor(this);
     BorderComponent* border = new BorderComponent(temp, 100);
@@ -315,94 +252,9 @@ bool Game::loadShaders(){
     if(!loadBorderShader())
         return false;
     
-    if(!loadTextShader())
-        return false;
-    
-    if(!loadUIShader())
-        return false;
-    
-    //temp
-    mScreenQuad = new Shader();
-
-    if(!mScreenQuad->load("src/shaders/screen.vert", "src/shaders/screen.frag")){
-        return false;
-    }
-
-    mScreenQuad->setActive();
-
-    float vertices[] = {
-        -1.f,  1.f, 0.f, 1.f,
-		 1.f,  1.f, 1.f, 1.f,
-		 1.f, -1.f, 1.f, 0.f,
-		-1.f, -1.f, 0.f, 0.f
-    };
-
-	unsigned int indices[] = {
-		0, 1, 2,
-        2, 3, 0
-	};
-    
-
-    mScreenQuad->setVertexData(vertices, 4, indices, 6, 4);
-
-    mScreenQuad->setAttrib("a_position", 2, 4, 0);
-    mScreenQuad->setAttrib("a_texCoord", 2, 4, 2);
-    
     return true;
 }
 
-bool Game::loadUIShader(){
-    mUIShader = new Shader();
-
-    if(!mUIShader->load("src/shaders/uitexture.vert", "src/shaders/uitexture.frag")){
-        return false;
-    }
-
-    mUIShader->setActive();
-
-    float vertices[] = {
-        -1.f,  1.f, 0.f, 1.f,
-		 1.f,  1.f, 1.f, 1.f,
-		 1.f, -1.f, 1.f, 0.f,
-		-1.f, -1.f, 0.f, 0.f
-    };
-
-	unsigned int indices[] = {
-		0, 1, 2,
-        2, 3, 0
-	};
-    
-
-    mUIShader->setVertexData(vertices, 4, indices, 6, 4);
-
-    mUIShader->setAttrib("a_vertex", 2, 4, 0);
-    mUIShader->setAttrib("a_texCoord", 2, 4, 2);
-    
-    return true;
-}
-
-bool Game::loadTextShader(){
-    mTextShader = new Shader();
-
-    if(!mTextShader->load("src/shaders/text.vert", "src/shaders/text.frag"))
-        return false;
-    
-    mTextShader->setActive();
-
-	unsigned int indices[] = {
-		2, 3, 0,
-        0, 1, 2  
-	};
-    
-
-    mTextShader->setVertexData(nullptr, 4, indices, 6, 4, GL_DYNAMIC_DRAW);
-
-    mTextShader->setAttrib("a_vertex", 2, 4, 0);
-    mTextShader->setAttrib("a_texCoord", 2, 4, 2);
-
-    return true;
-
-}
 
 bool Game::loadCircleShader(){
     mCircleShader = new Shader();
@@ -579,15 +431,6 @@ Snake* Game::getSnake(){
     return mSnake;
 }
 
-
-std::vector<class UIScreen*>& Game::getUIStack(){
-    return mUIStack;
-}
-
-void Game::pushUI(class UIScreen* screen){
-    mUIStack.emplace_back(screen);
-}
-
 void Game::setState(GameState state){
     mGameState = state;
 }
@@ -596,62 +439,23 @@ Game::GameState Game::getState(){
     return mGameState;
 }
 
-Font* Game::getFont(const std::string& fileName){
-    auto iter = mFonts.find(fileName);
-
-    if(iter != mFonts.end()){
-        return iter->second;
-    }else{
-        Font* font = new Font(this);
-
-        if(font->loadCharacters(fileName, 48)){
-            mFonts.emplace(fileName, font);
-        }else{
-            delete font;
-            font = nullptr;
-        }
-
-        return font;
-    }
-}
-
-void Game::loadText(const std::string& fileName){
-    // mText.clear();
-    // std::ifstream file(fileName);
-    // if(!file.is_open()){
-    //     printf("Text file %s not found", fileName.c_str());
-    //     return;
-    // }
-
-    // std::stringstream fileStream;
-    // fileStream << file.rdbuf();
-    // std::string contents = fileStream.str();
-
-    //CONTINUE LATER!!!!!
-    mText.emplace("Paused", "Paused");
-}
-
-const std::string& Game::getText(const std::string& key){
-    static std::string errorMsg("KEY NOT FOUND");
-
-    auto iter = mText.find(key);
-    if(iter != mText.end()){
-        return iter->second;
-    }else{
-        return errorMsg;
-    }
-}
-
 void Game::handleKeyPress(int key){
     switch(key){
         case SDLK_p:
-            new PauseMenu(this);
+            if(mGameState == EGameplay){
+                setState(Game::EPause);
+                // SDL_SetRelativeMouseMode(SDL_FALSE);
+            }else {
+                setState(Game::EGameplay);
+            }
+            
             break;
         default:
             break;
     }
 }
 
-FT_Library& Game::getFtLib(){
-    return mFtLib;
+
+std::deque<std::string>& Game::getJSInput(){
+    return jsInput;
 }

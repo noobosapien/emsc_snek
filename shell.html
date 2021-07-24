@@ -3,13 +3,52 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Game Shell</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+
+    <title>Snek fr gm jam</title>
     <link href="shell.css" rel="stylesheet" type="text/css">
+    <link href="stylesheets/header.css" type="text/css" rel="stylesheet">
+    <link href="stylesheets/main.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="stylesheets/desktop.css" type="text/css" media="screen and (pointer: fine)">
+    <link rel="stylesheet" href="stylesheets/mobile1.css" type="text/css" media="screen and (orientation: landscape) and (pointer: coarse)">
+    <link rel="stylesheet" href="stylesheets/mobile2.css" type="text/css" media="screen and (orientation: portrait) and (pointer: coarse)">
   </head>
   <body>
-    <canvas id="canvas" width=window.innerWidth height=window.innerHeight oncontextmenu="event.preventDefault()"></canvas>
+    <!-- HEADER EXPERIMENTAL STUFF RIGHT HERE -->
+    <header id="anim-header">
+      <section class="header-bg-blurry"></section>
+      <section class="header-content">
+        <h1 class="header-title js-animate-letters animate-fade-zoom">
+          <span>S</span>
+          <span>N</span>
+          <span>E</span>
+          <span>K</span>
+        </h1>
+      </section>
+      <section class="header-down-arrow">
+        <!-- <img src="textures/start_play.png" width="50"> -->
+        <button id="start"></button>
+      </section>
+    </header>
 
-        <script type="text/javascript" src="shell.js"></script>
-    {{{ SCRIPT }}}
+    <div id="game">
+      <canvas id="canvas" style="top: 0; left: 0;" width=window.innerWidth height=window.innerHeight oncontextmenu="event.preventDefault()"></canvas>
+      <div style="position: fixed; color: white;">
+        <h1 class="header">
+          SNEK
+        </h1>
+      </div>
+      <div id="menu">
+        <button id="pause"></button>
+      </div>
+      <div id="directions">
+        <button id="up"></button>
+        <button id="down"></button>
+        <button id="left"></button>
+        <button id="right"></button>
+      </div>
+          <script type="text/javascript" src="shell.js"></script>
+      {{{ SCRIPT }}}
+    </div>
   </body>
 </html>

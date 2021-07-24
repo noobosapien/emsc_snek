@@ -2,11 +2,45 @@ var img = null;
 var canvas = null;
 var ctx = null;
 var setWinDim = null;
+var setInput = null;
+var paused = false;
 
 function ModuleLoaded(){
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext("2d");
     setWinDim = Module.cwrap("set_win_dim", "undefined", ["int", "int"]);
+    setInput = Module.cwrap("set_input", "undefined", ["string"]);
+
+    if(setInput){
+        document.getElementById('up').onclick = function(event) {
+            event.preventDefault();
+            setInput("up");
+        }
+
+        document.getElementById('down').onclick = function(event) {
+            event.preventDefault();
+            setInput("down");
+        }
+
+        document.getElementById('left').onclick = function(event) {
+            event.preventDefault();
+            setInput("left");
+        }
+
+        document.getElementById('right').onclick = function(event) {
+            event.preventDefault();
+            setInput("right");
+        }
+
+        document.getElementById("pause").onclick = function(event) {
+            event.preventDefault();
+            paused ? setInput("play") : setInput("pause");
+            paused ? document.getElementById("pause").style.background = "url('src/textures/pause.png') no-repeat"
+            : document.getElementById("pause").style.background = "url('src/textures/play.png') no-repeat";
+            document.getElementById("pause").style.backgroundSize = "35px 35px";
+            paused = !paused;
+        }
+    }
 
     if(setWinDim){
         setWinDim(window.innerWidth, window.innerHeight);

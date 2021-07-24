@@ -11,6 +11,7 @@
 #include <sstream>
 #include <fstream>
 #include <functional>
+#include <deque>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H

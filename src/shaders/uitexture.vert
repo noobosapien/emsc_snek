@@ -25,7 +25,7 @@ void main()
 	vec4 pos = vec4(a_vertex, 0.0, 1.0);
 
 	//gl_Position = u_projection * u_view * u_model * pos;
-	gl_Position = u_viewproj * u_model * pos;
+	gl_Position = pos;
 	
 	v_fragTexCoord = a_texCoord;
 }

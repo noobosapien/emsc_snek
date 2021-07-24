@@ -4,10 +4,10 @@ UIScreen::UIScreen(Game* game): mGame(game),
 mTitle(nullptr), mBackground(nullptr), mTitlePos(0.0f, 300.0f), 
 mSelected(nullptr), mUnSelected(nullptr),
 mNextButtonPos(0.0f, 0.0f), mBGPos(0.0f, 250.0f), mState(EActive){
-    mGame->pushUI(this);
-    mFont = mGame->getFont("src/fonts/normal.ttf");
-    mSelected = mGame->getTexture("src/textures/ButtonYellow.png");
-    mUnSelected = mGame->getTexture("src/textures/ButtonBlue.png");
+    // mGame->pushUI(this);
+    // mFont = mGame->getFont("src/fonts/normal.ttf");
+    // mSelected = mGame->getTexture("src/textures/ButtonYellow.png");
+    // mUnSelected = mGame->getTexture("src/textures/ButtonBlue.png");
 }
 
 UIScreen::~UIScreen(){

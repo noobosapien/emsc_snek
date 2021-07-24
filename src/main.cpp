@@ -13,6 +13,13 @@ void set_win_dim(int width, int height){
     game->setWinDim(width, height);
 }
 
+extern "C"
+EMSCRIPTEN_KEEPALIVE
+
+void set_input(char* input){
+    game->setInput(input);
+}
+
 int main(int argc, char* argv[]){
     game = new Game;
 
