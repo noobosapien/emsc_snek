@@ -30,10 +30,11 @@ header {
 header:before {
   -webkit-animation: zoom-back 20s .5s cubic-bezier(0, 0.5, 0, 1) forwards;
           animation: zoom-back 20s .5s cubic-bezier(0, 0.5, 0, 1) forwards;
-  background: -webkit-linear-gradient(top, rgba(0,0,0,.1), rgba(0,0,0,1)),rgb(33, 33, 33);
-  /* url(../src/textures/background.png) no-repeat bottom; */
+  background: -webkit-linear-gradient(top, rgba(0,0,0,.1), rgba(0,0,0,1)),
+  url(../src/textures/background.png) no-repeat bottom;
   background: linear-gradient(to bottom, rgba(0,0,0,.1), rgba(0,0,0,1)),
-              /* url(../src/textures/background.png) no-repeat bottom; */rgb(33, 33, 33);
+              url(../src/textures/background.png) no-repeat bottom;
+              /* rgb(33, 33, 33); */
 
   background-size: cover;
     bottom: -30vh;
@@ -52,7 +53,7 @@ header:before {
              fade-in-out 8s .5s ease-out forwards;
           animation: zoom-back-reveal 10s .5s cubic-bezier(0, 0.5, 0, 1) forwards,
              fade-in-out 8s .5s ease-out forwards;
-  /* background: url(../src/textures/background_blur.png) no-repeat bottom; */
+  background: url(../src/textures/background_blur.png) no-repeat bottom;
   background: rgb(33, 33, 33);
   background-size: cover;
     bottom: -30vh;

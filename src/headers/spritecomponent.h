@@ -5,7 +5,7 @@ class SpriteComponent: public Component{
 
 public:
     SpriteComponent(class Actor* owner, int drawOrder = 100);
-    ~SpriteComponent();
+    virtual ~SpriteComponent();
 
     virtual void draw(class Shader* shader);
     virtual void setTexture(class Texture* texture);

@@ -16,6 +16,8 @@ Actor::~Actor(){
         std::cout << "Component size: " << mComponents.size() << std::endl;
         delete component;
     }
+    std::cout << "Components size: " << mComponents.size() << std::endl;
+
     mGame->removeActor(this);
 }
 
@@ -85,7 +87,7 @@ void Actor::addComponent(class Component* component){
 void Actor::removeComponent(class Component* component){
     
     auto iter = std::find(mComponents.begin(), mComponents.end(), component);
-
+    printf("removeComponents: %lu\n", mComponents.size());
     if(iter != mComponents.end()){
         mComponents.erase(iter);
     }

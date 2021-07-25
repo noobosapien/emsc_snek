@@ -10,6 +10,7 @@ public:
     bool shutDown();
     void setWinDim(int width, int height);
     void setInput(char* input);
+    void setDirection();
     void resetGame();
 
     enum GameState{
@@ -32,6 +33,9 @@ public:
 
     void setSnake( Snake* snake);
     Snake* getSnake();
+
+    void setFood(Food* food);
+    Food* getFood();
 
     Texture* getTexture(const std::string& filename);
 
@@ -80,6 +84,7 @@ private:
 
     GameState mGameState;
     Snake* mSnake;
+    Food* mFood;
 
     Shader* mSpriteShader;
     Shader* mCircleShader;

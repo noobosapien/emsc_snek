@@ -95,13 +95,42 @@ void Game::setInput(char* input) {
     }
 }
 
+void Game::setDirection(){
+
+    if(mFood && mSnake){
+        auto snekPos = mSnake->getPosition();
+        auto foodPos = mFood->getPosition();
+
+        // std::cout << "Snek Pos: " << snekPos.x << ", " << snekPos.y << std::endl;
+        // std::cout << "Food Pos: " << foodPos.x << ", " << foodPos.y << std::endl;
+
+        auto AB = foodPos - snekPos;
+        auto AC = foodPos + glm::vec2(1.0, 0.0);
+
+        auto top = (AB.x * AC.x) + (AB.y * AC.y);
+
+        auto bot1 = glm::sqrt((AB.x * AB.x) + (AB.y * AB.y));
+        auto bot2 = glm::sqrt((AC.x * AC.x) + (AC.y * AC.y));
+
+        auto angle = glm::acos(top / (bot1 * bot2));
+        // angle = angle * (180 / PI);
+        // std::cout << "angle: " << angle << std::endl;
+
+        bool down = (snekPos.y > foodPos.y);
+
+        EM_ASM({setDirection($0, $1)}, angle, down);
+    }else{
+        EM_ASM({setDirection($0, $1)}, "nofood", false);
+    }
+}
+
 void Game::resetGame(){
     //unload data
     unloadData();
     //load data
     loadData();
     //EM_ASM to set hero header
-    EM_ASM(backToStart());
+    EM_ASM_(backToStart());
     //set state to start
     setState(EStart);
 }
@@ -151,6 +180,9 @@ void Game::updateGame(){
     if(mGameState == EGameplay){
         mWebSocket->processAllPackets();
         mWebSocket->sendOutgoing();
+
+        //update the compass
+        setDirection();
 
         //Actor stuff
 
@@ -238,18 +270,23 @@ void Game::loadData(){
 }
 
 void Game::unloadData(){
-    // while(!mActors.empty()){
-    //    removeActor(mActors.back());
-    // }
+    while(!mActors.empty()){
+       delete mActors.back();
+    }
 
-    if(mSnake){
-        delete mSnake;
-        mSnake = nullptr;
-    }
+    // if(mSnake){
+    //     try{
+    //         delete mSnake;
+    //         mSnake = nullptr;
+    //     }catch(...){
+    //         std::cout << " Error deleting snake" << std::endl;
+    //     }
+        
+    // }
     
-    for(auto actor : mActors){
-        removeActor(actor);
-    }
+    // for(auto actor : mActors){
+    //     removeActor(actor);
+    // }
 
     for(auto i : mTextures){
         i.second->unload();
@@ -392,7 +429,7 @@ void Game::addSprite(SpriteComponent* sprite){
 
 void Game::removeSprite(SpriteComponent* sprite){
     auto iter = std::find(mSprites.begin(), mSprites.end(), sprite);
-
+    std::cout << "game removeSprite: " << mSprites.size() << std::endl;
     if(iter != mSprites.end()){
         mSprites.erase(iter);
     }
@@ -462,6 +499,14 @@ Snake* Game::getSnake(){
     return mSnake;
 }
 
+void Game::setFood(Food* food){
+    mFood = food;
+}
+
+Food* Game::getFood(){
+    return mFood;
+}
+
 void Game::setState(GameState state){
     mGameState = state;
 }
@@ -490,3 +535,4 @@ void Game::handleKeyPress(int key){
 std::deque<std::string>& Game::getJSInput(){
     return jsInput;
 }
+

@@ -13,6 +13,12 @@ function backToStart(){
     document.getElementById("anim-header").style.zIndex = 30;
 }
 
+function setDirection(direction, top){
+    if(direction !== "nofood")
+        top ? document.getElementById("compass").style.transform = "rotate(" + direction + "rad)":
+        document.getElementById("compass").style.transform = "rotate(" + -direction + "rad)";
+}
+
 function ModuleLoaded(){
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext("2d");

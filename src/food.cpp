@@ -10,10 +10,14 @@ Food::Food(Game* game): Actor(game){
     mCircle->setRadius(60.f);
     
     mSnake = getGame()->getSnake();
+
+    // if(getGame()->getFood() != nullptr)
+    //     delete getGame()->getFood();
+    getGame()->setFood(this);
 }
 
 Food::~Food(){
-    
+    getGame()->setFood(nullptr);
 }
 
 void Food::read(InputStream& inStream){
